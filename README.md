@@ -1,4 +1,6 @@
-# Expect
+# Expecting
+
+TODO
 
 Minimalistic BDD assertion toolkit based on
 [should.js](http://github.com/visionmedia/should.js)
