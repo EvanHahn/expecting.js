@@ -3,10 +3,8 @@
 var expect = require('../expecting')
 var assert = require('assert')
 
-var isNameSupported
-;(function a () {
-  isNameSupported = a.name === 'a'
-})()
+function dummyFunction () {}
+var isNameSupported = dummyFunction.name === 'dummyFunction'
 
 describe('expect', function () {
   describe('.to.be', function () {
