@@ -437,18 +437,36 @@ describe('expect', function () {
     }, /expected 'foobar' not to match \/\^foo\/i/)
   })
 
-  it('should test length(n)', function () {
-    expect('test').to.have.length(4)
-    expect('test').to.not.have.length(3)
-    expect([1, 2, 3]).to.have.length(3)
+  describe('.to.have.length', function () {
+    it('tests length for values with lengths', function () {
+      expect('test').to.have.length(4)
+      expect([1, 2, 3]).to.have.length(3)
+      expect({ length: 10 }).to.have.length(10)
 
-    assert.throws(function () {
-      expect(4).to.have.length(3)
-    }, /expected 4 to have a property 'length'/)
+      expect('test').to.not.have.length(3)
 
-    assert.throws(function () {
-      expect('asd').to.not.have.length(3)
-    }, /expected 'asd' to not have a length of 3/)
+      assert.throws(function () {
+        expect('asd').to.not.have.length(3)
+      }, /expected 'asd' to not have a length of 3/)
+    })
+
+    it('throws for values with no lengths', function () {
+      assert.throws(function () {
+        expect(undefined).to.have.length(3)
+      }, /expected undefined to have property 'length'/)
+
+      assert.throws(function () {
+        expect(null).to.have.length(3)
+      }, /expected null to have property 'length'/)
+
+      assert.throws(function () {
+        expect(4).to.have.length(3)
+      }, /expected 4 to have property 'length'/)
+
+      assert.throws(function () {
+        expect({}).to.have.length(3)
+      }, /expected {} to have property 'length'/)
+    })
   })
 
   it('should test eql(val)', function () {
@@ -513,48 +531,98 @@ describe('expect', function () {
     })
   })
 
-  it('should test property(name)', function () {
-    expect('test').to.have.property('length')
-    expect(4).to.not.have.property('length')
-    expect({ length: undefined }).to.have.property('length')
+  describe('.to.have.property', function () {
+    it('tests for property existence', function () {
+      expect('test').to.have.property('length')
+      expect(4).to.not.have.property('length')
+      expect({ length: undefined }).to.have.property('length')
+      expect(5).to.have.property('valueOf')
 
-    assert.throws(function () {
-      expect('asd').to.have.property('foo')
-    }, /expected 'asd' to have a property 'foo'/)
+      expect(undefined).not.to.have.property('foo')
+      expect(null).not.to.have.property('foo')
+      expect(123).not.to.have.property('foo')
+      expect({}).not.to.have.property('foo')
 
-    assert.throws(function () {
-      expect({ length: undefined }).to.not.have.property('length')
-    }, /expected { length: undefined } to not have a property 'length'/)
-  })
+      assert.throws(function () {
+        expect(undefined).to.have.property('foo')
+      }, /expected undefined to have property 'foo'/)
 
-  it('should test property(name, val)', function () {
-    expect('test').to.have.property('length', 4)
-    expect({ length: undefined }).to.have.property('length', undefined)
+      assert.throws(function () {
+        expect('asd').to.have.property('foo')
+      }, /expected 'asd' to have property 'foo'/)
 
-    assert.throws(function () {
-      expect('asd').to.have.property('length', 4)
-    }, /expected 'asd' to have a property 'length' of 4, but got 3/)
+      assert.throws(function () {
+        expect({ length: undefined }).to.not.have.property('length')
+      }, /expected { length: undefined } not to have property 'length'/)
+    })
 
-    assert.throws(function () {
-      expect('asd').to.not.have.property('length', 3)
-    }, /expected 'asd' to not have a property 'length' of 3/)
+    it('tests for property value', function () {
+      expect('test').to.have.property('length', 4)
+      expect({ length: undefined }).to.have.property('length', undefined)
 
-    assert.throws(function () {
-      expect('asd').to.not.have.property('foo', 3)
-    }, /'asd' has no property 'foo'/)
+      assert.throws(function () {
+        expect('asd').to.have.property('length', 4)
+      }, /expected 'asd' to have property 'length' of 4, but got 3/)
 
-    assert.throws(function () {
-      expect({ length: undefined }).to.not.have.property('length', undefined)
-    }, /expected { length: undefined } to not have a property 'length'/)
-  })
+      assert.throws(function () {
+        expect('asd').to.have.property('foo', 3)
+      }, /expected 'asd' to have property 'foo' of 3, but got undefined/)
 
-  it('should test own.property(name)', function () {
-    expect('test').to.have.own.property('length')
-    expect({ length: 12 }).to.have.own.property('length')
+      assert.throws(function () {
+        expect({ length: undefined }).to.not.have.property('length', undefined)
+      }, /expected { length: undefined } not to have property 'length' of undefined/)
+    })
 
-    assert.throws(function () {
-      expect({ length: 12 }).to.not.have.own.property('length')
-    }, /expected { length: 12 } to not have own property 'length'/)
+    it('tests for own property existence', function () {
+      function Foo () {
+        this.baz = '456'
+      }
+      Foo.prototype.boo = 123
+
+      expect('test').to.have.own.property('length')
+      expect({ length: 12 }).to.have.own.property('length')
+      expect(new Foo()).to.have.own.property('baz')
+
+      expect(5).not.to.have.own.property('foo')
+      expect(new Foo()).not.to.have.own.property('boo')
+
+      assert.throws(function () {
+        expect({ length: 12 }).to.not.have.own.property('length')
+      }, /expected { length: 12 } not to have own property 'length'/)
+    })
+
+    it('tests for own property value', function () {
+      function Foo () {
+        this.baz = '456'
+      }
+      Foo.prototype.boo = 123
+
+      expect('test').to.have.own.property('length', 4)
+      expect({ length: 12 }).to.have.own.property('length', 12)
+      expect(new Foo()).to.have.own.property('baz', '456')
+
+      var f = new Foo()
+      f.boo = 999
+      expect(f).to.have.own.property('boo', 999)
+
+      expect(5).not.to.have.own.property('foo', 3)
+      expect('test').not.to.have.own.property('length', 3)
+      expect({ length: 12 }).not.to.have.own.property('length', 9)
+      expect(new Foo()).not.to.have.own.property('boo', 123)
+      expect(new Foo()).not.to.have.own.property('boo', 456)
+
+      assert.throws(function () {
+        expect({}).to.have.own.property('foo', 10)
+      }, /expected {} to have own property 'foo' of 10, but got undefined/)
+
+      assert.throws(function () {
+        expect({ foo: 12 }).to.have.own.property('foo', 10)
+      }, /expected { foo: 12 } to have own property 'foo' of 10, but got 12/)
+
+      assert.throws(function () {
+        expect({ length: 12 }).to.have.own.property('foo', 10)
+      }, /expected { length: 12 } to have own property 'foo' of 10, but got undefined/)
+    })
   })
 
   it('should test string()', function () {

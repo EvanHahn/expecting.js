@@ -1,4 +1,6 @@
 var bind = require('lodash/bind')
+var has = require('lodash/has')
+var hasIn = require('lodash/hasin')
 var i = require('util').inspect
 var indexOf = require('lodash/indexof')
 var isArray = require('lodash/isarray')
@@ -365,51 +367,51 @@ Assertion.prototype.length = function (n) {
  */
 
 Assertion.prototype.property = function (name, val) {
-  if (this.flags.own) {
-    this.assert(
-      Object.prototype.hasOwnProperty.call(this.obj, name),
-      function () { return 'expected ' + i(this.obj) + ' to have own property ' + i(name) },
-      function () { return 'expected ' + i(this.obj) + ' to not have own property ' + i(name) }
-    )
-    return this
-  }
+  var condition, message, notMessage
 
-  if (this.flags.not && val !== undefined) {
-    if (this.obj[name] === undefined) {
-      throw new Error(i(this.obj) + ' has no property ' + i(name))
+  if (arguments.length === 2) {
+    if (this.flags.own) {
+      condition = has(this.obj, name) && this.obj[name] === val
+      message = function () {
+        return 'expected ' + i(this.obj) + ' to have own property ' + i(name) +
+          ' of ' + i(val) + ', but got ' + i(this.obj[name])
+      }
+      notMessage = function () {
+        return 'expected ' + i(this.obj) + ' not to have own property ' + i(name) +
+          ' of ' + i(val)
+      }
+    } else {
+      condition = hasIn(this.obj, name) && this.obj[name] === val
+      message = function () {
+        return 'expected ' + i(this.obj) + ' to have property ' + i(name) +
+          ' of ' + i(val) + ', but got ' + i(this.obj[name])
+      }
+      notMessage = function () {
+        return 'expected ' + i(this.obj) + ' not to have property ' + i(name) +
+          ' of ' + i(this.obj[name])
+      }
     }
   } else {
-    var hasProp
-    try {
-      hasProp = name in this.obj
-    } catch (e) {
-      hasProp = undefined !== this.obj[name]
-    }
-
-    this.assert(
-      hasProp,
-      function () { return 'expected ' + i(this.obj) + ' to have a property ' + i(name) },
-      function () { return 'expected ' + i(this.obj) + ' to not have a property ' + i(name) }
-    )
-  }
-
-  if (val !== undefined) {
-    this.assert(
-      val === this.obj[name],
-      function () {
-        return 'expected ' + i(this.obj) + ' to have a property ' + i(name) +
-        ' of ' + i(val) + ', but got ' + i(this.obj[name])
-      },
-      function () {
-        return 'expected ' + i(this.obj) + ' to not have a property ' + i(name) +
-        ' of ' + i(val)
+    if (this.flags.own) {
+      condition = has(this.obj, name)
+      message = function () {
+        return 'expected ' + i(this.obj) + ' to have own property ' + i(name)
       }
-    )
+      notMessage = function () {
+        return 'expected ' + i(this.obj) + ' not to have own property ' + i(name)
+      }
+    } else {
+      condition = hasIn(this.obj, name)
+      message = function () {
+        return 'expected ' + i(this.obj) + ' to have property ' + i(name)
+      }
+      notMessage = function () {
+        return 'expected ' + i(this.obj) + ' not to have property ' + i(name)
+      }
+    }
   }
 
-  this.obj = this.obj[name]
-
-  return this
+  this.assert(condition, message, notMessage)
 }
 
 /**
