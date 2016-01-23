@@ -91,6 +91,7 @@ describe('expect', function () {
     })
 
     it('tests undefined', function () {
+      expect().to.be(void 0)
       expect(void 0).to.be(void 0)
 
       expect('').not.to.be(void 0)
