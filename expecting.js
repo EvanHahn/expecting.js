@@ -450,54 +450,54 @@
    * @api public
    */
 
-  Assertion.prototype.key =
-    Assertion.prototype.keys = function ($keys) {
-      var str,
-        ok = true
+  Assertion.prototype.key = Assertion.prototype.keys = function ($keys) {
+    var str
+    var ok = true
 
-      $keys = isArray($keys)
-        ? $keys
-        : Array.prototype.slice.call(arguments)
+    $keys = isArray($keys) ? $keys : Array.prototype.slice.call(arguments)
 
-      if (!$keys.length) throw new Error('keys required')
+    if (!$keys.length) {
+      throw new Error('keys required')
+    }
 
-      var actual = keys(this.obj),
-        len = $keys.length
+    var actual = keys(this.obj)
+    var len = $keys.length
 
-      // Inclusion
-      ok = every($keys, function (key) {
-        return ~indexOf(actual, key)
+    // Inclusion
+    ok = every($keys, function (key) {
+      return ~indexOf(actual, key)
+    })
+
+    // Strict
+    if (!this.flags.not && this.flags.only) {
+      ok = ok && $keys.length === actual.length
+    }
+
+    // Key string
+    if (len > 1) {
+      $keys = map($keys, function (key) {
+        return i(key)
       })
+      var last = $keys.pop()
+      str = $keys.join(', ') + ', and ' + last
+    } else {
+      str = i($keys[0])
+    }
 
-      // Strict
-      if (!this.flags.not && this.flags.only) {
-        ok = ok && $keys.length == actual.length
-      }
+    // Form
+    str = (len > 1 ? 'keys ' : 'key ') + str
 
-      // Key string
-      if (len > 1) {
-        $keys = map($keys, function (key) {
-          return i(key)
-        })
-        var last = $keys.pop()
-        str = $keys.join(', ') + ', and ' + last
-      } else {
-        str = i($keys[0])
-      }
+    // Have / include
+    str = (!this.flags.only ? 'include ' : 'only have ') + str
 
-      // Form
-      str = (len > 1 ? 'keys ' : 'key ') + str
+    // Assertion
+    this.assert(
+      ok,
+      function () { return 'expected ' + i(this.obj) + ' to ' + str },
+      function () { return 'expected ' + i(this.obj) + ' to not ' + str }
+    )
 
-      // Have / include
-      str = (!this.flags.only ? 'include ' : 'only have ') + str
-
-      // Assertion
-      this.assert(
-        ok
-        , function () { return 'expected ' + i(this.obj) + ' to ' + str }
-        , function () { return 'expected ' + i(this.obj) + ' to not ' + str })
-
-      return this
+    return this
   }
 
   /**
