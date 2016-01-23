@@ -129,9 +129,13 @@
 
   Assertion.prototype.withArgs = function () {
     expect(this.obj).to.be.a('function')
+
     var fn = this.obj
     var args = Array.prototype.slice.call(arguments)
-    return expect(function () { fn.apply(null, args); })
+
+    return expect(function () {
+      fn.apply(null, args)
+    })
   }
 
   /**
@@ -215,13 +219,13 @@
    * @api public
    */
 
-  Assertion.prototype.be =
-    Assertion.prototype.equal = function (obj) {
-      this.assert(
-        obj === this.obj
-        , function () { return 'expected ' + i(this.obj) + ' to equal ' + i(obj) }
-        , function () { return 'expected ' + i(this.obj) + ' to not equal ' + i(obj) })
-      return this
+  Assertion.prototype.be = Assertion.prototype.equal = function (obj) {
+    this.assert(
+      obj === this.obj,
+      function () { return 'expected ' + i(this.obj) + ' to equal ' + i(obj) },
+      function () { return 'expected ' + i(this.obj) + ' to not equal ' + i(obj) }
+    )
+    return this
   }
 
   /**
@@ -232,10 +236,11 @@
 
   Assertion.prototype.eql = function (obj) {
     this.assert(
-      expect.eql(this.obj, obj)
-      , function () { return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) }
-      , function () { return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) }
-      , obj)
+      expect.eql(this.obj, obj),
+      function () { return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) },
+      function () { return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) },
+      obj
+    )
     return this
   }
 
@@ -248,11 +253,12 @@
    */
 
   Assertion.prototype.within = function (start, finish) {
-    var range = start + '..' + finish
+    var rangeString = start + '..' + finish
     this.assert(
-      this.obj >= start && this.obj <= finish
-      , function () { return 'expected ' + i(this.obj) + ' to be within ' + range }
-      , function () { return 'expected ' + i(this.obj) + ' to not be within ' + range })
+      this.obj >= start && this.obj <= finish,
+      function () { return 'expected ' + i(this.obj) + ' to be within ' + rangeString },
+      function () { return 'expected ' + i(this.obj) + ' to not be within ' + rangeString }
+    )
     return this
   }
 
@@ -262,31 +268,31 @@
    * @api public
    */
 
-  Assertion.prototype.a =
-    Assertion.prototype.an = function (type) {
-      if ('string' == typeof type) {
-        // proper english in error msg
-        var n = /^[aeiou]/.test(type) ? 'n' : ''
-
-        // typeof with support for 'array'
-        this.assert(
-          'array' == type ? isArray(this.obj) :
-            'regexp' == type ? isRegExp(this.obj) :
-              'object' == type
-                ? 'object' == typeof this.obj && null !== this.obj
-                : type == typeof this.obj
-          , function () { return 'expected ' + i(this.obj) + ' to be a' + n + ' ' + type }
-          , function () { return 'expected ' + i(this.obj) + ' not to be a' + n + ' ' + type })
-      } else {
-        // instanceof
-        var name = type.name || 'supplied constructor'
-        this.assert(
-          this.obj instanceof type
-          , function () { return 'expected ' + i(this.obj) + ' to be an instance of ' + name }
-          , function () { return 'expected ' + i(this.obj) + ' not to be an instance of ' + name })
+  Assertion.prototype.a = Assertion.prototype.an = function (type) {
+    if (typeof type === 'string') {
+      var specialTypeofs = {
+        array: isArray(this.obj),
+        regexp: isRegExp(this.obj),
+        object: typeof this.obj === 'object' && this.obj !== null
       }
 
-      return this
+      var condition = type in specialTypeofs ? specialTypeofs[type] : typeof this.obj === type
+
+      var n = /^[aeiou]/.test(type) ? 'n' : ''
+      var okMessage = function () { return 'expected ' + i(this.obj) + ' to be a' + n + ' ' + type }
+      var notMessage = function () { return 'expected ' + i(this.obj) + ' not to be a' + n + ' ' + type }
+
+      this.assert(condition, okMessage, notMessage)
+    } else {
+      // instanceof
+      var name = type.name || 'supplied constructor'
+      this.assert(
+        this.obj instanceof type
+          , function () { return 'expected ' + i(this.obj) + ' to be an instance of ' + name }
+          , function () { return 'expected ' + i(this.obj) + ' not to be an instance of ' + name })
+    }
+
+    return this
   }
 
   /**
