@@ -13,7 +13,6 @@ var isString = require('lodash/isstring')
  */
 
 module.exports = expect
-expect.Assertion = Assertion
 
 /**
  * Exports version.

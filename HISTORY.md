@@ -1,7 +1,10 @@
 unreleased
 ==========
 
-This is the first version after the fork.
+ * remove: `expect.Assertion`
+ * remove: `expect.eql`
+
+This is the first version after the fork. Changes for the previous version are listed below.
 
 0.3.0 / 2014-02-20
 ==================
