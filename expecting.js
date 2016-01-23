@@ -425,20 +425,21 @@
    * @api public
    */
 
-  Assertion.prototype.string =
-    Assertion.prototype.contain = function (obj) {
-      if ('string' == typeof this.obj) {
-        this.assert(
-          ~this.obj.indexOf(obj)
-          , function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) }
-          , function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) })
-      } else {
-        this.assert(
-          ~indexOf(this.obj, obj)
-          , function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) }
-          , function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) })
-      }
-      return this
+  Assertion.prototype.string = Assertion.prototype.contain = function (obj) {
+    if (typeof this.obj === 'string') {
+      this.assert(
+        ~this.obj.indexOf(obj),
+        function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
+        function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) }
+      )
+    } else {
+      this.assert(
+        ~indexOf(this.obj, obj),
+        function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
+        function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) }
+      )
+    }
+    return this
   }
 
   /**
