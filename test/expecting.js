@@ -61,6 +61,35 @@ describe('expect', function () {
         expect([]).to.be([1, 2])
       }, /expected \[\] to equal \[ 1, 2 \]/)
     })
+
+    it('tests null', function () {
+      expect(null).to.be(null)
+
+      expect('').not.to.be(null)
+      expect('null').not.to.be(null)
+      expect(undefined).not.to.be(null)
+      expect(0).not.to.be(null)
+      expect([null]).not.to.be(null)
+
+      assert.throws(function () {
+        expect(123).to.be(null)
+      }, /expected 123 to equal null/)
+    })
+
+    it('tests undefined', function () {
+      expect(void 0).to.be(void 0)
+
+      expect('').not.to.be(void 0)
+      expect('undefined').not.to.be(void 0)
+      expect('void 0').not.to.be(void 0)
+      expect(null).not.to.be(void 0)
+      expect(0).not.to.be(void 0)
+      expect([void 0]).not.to.be(void 0)
+
+      assert.throws(function () {
+        expect(123).to.be(void 0)
+      }, /expected 123 to equal undefined/)
+    })
   })
 
   // TODO: to.equal
@@ -336,11 +365,6 @@ describe('expect', function () {
         }, /expected 3 to be an instance of supplied constructor/)
       }
     })
-  })
-
-  it('should test .equal()', function () {
-    var foo
-    expect(foo).to.be(undefined)
   })
 
   it('should test within(start, finish)', function () {
