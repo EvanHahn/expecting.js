@@ -19,7 +19,11 @@
    */
 
   var flags = {
-    not: ['to', 'be', 'have', 'include', 'only'],     to: ['be', 'have', 'include', 'only', 'not'],     only: ['have'],     have: ['own'],     be: ['an']
+    not: ['to', 'be', 'have', 'include', 'only'],
+    to: ['be', 'have', 'include', 'only', 'not'],
+    only: ['have'],
+    have: ['own'],
+    be: ['an']
   }
 
   function expect (obj) {
