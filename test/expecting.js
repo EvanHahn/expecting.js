@@ -689,15 +689,17 @@ describe('expect', function () {
     }, /expected 5 to be below 4/)
   })
 
-  it('should fail with `fail`', function () {
-    assert.throws(function () {
-      expect().fail()
-    }, /explicit failure/)
-  })
+  describe('.fail', function () {
+    it('throws an error', function () {
+      assert.throws(function () {
+        expect().fail()
+      }, /explicit failure/)
+    })
 
-  it('should fail with `fail` and custom message', function () {
-    assert.throws(function () {
-      expect().fail('explicit failure with message')
-    }, /explicit failure with message/)
+    it('can throw a custom message', function () {
+      assert.throws(function () {
+        expect().fail('explicit failure with message')
+      }, /explicit failure with message/)
+    })
   })
 })
