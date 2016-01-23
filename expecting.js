@@ -16,12 +16,6 @@ var keys = require('lodash/keys')
 module.exports = expect
 
 /**
- * Exports version.
- */
-
-expect.version = '0.3.1'
-
-/**
   * Possible assertion flags.
   */
 

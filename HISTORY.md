@@ -1,6 +1,7 @@
 unreleased
 ==========
 
+ * remove: `expect.version`
  * remove: `expect.Assertion`
  * remove: `expect.eql`
 

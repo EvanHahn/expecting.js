@@ -7,10 +7,6 @@ var isNameSupported
 })()
 
 describe('expect', function () {
-  it('should have .version', function () {
-    expect(expect.version).to.match(/^\d+\.\d+\.\d+$/)
-  })
-
   it('should work in its basic form', function () {
     expect('test').to.be.a('string')
   })
