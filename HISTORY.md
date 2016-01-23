@@ -1,3 +1,7 @@
+unreleased
+==========
+
+This is the first version after the fork.
 
 0.3.0 / 2014-02-20
 ==================
