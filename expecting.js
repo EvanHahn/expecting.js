@@ -88,18 +88,20 @@
    * @api private
    */
 
-  Assertion.prototype.assert = function (truth, msg, error, expected) {
-    var msg = this.flags.not ? error : msg,
-      ok = this.flags.not ? !truth : truth,
-      err
+  Assertion.prototype.assert = function (truth, okMessage, notMessage, expected) {
+    var message = this.flags.not ? notMessage : okMessage
+    var ok = this.flags.not ? !truth : truth
 
     if (!ok) {
-      err = new Error(msg.call(this))
-      if (arguments.length > 3) {
+      var err = new Error(message.call(this))
+
+      var hasExpected = arguments.length > 3
+      if (hasExpected) {
         err.actual = this.obj
         err.expected = expected
         err.showDiff = true
       }
+
       throw err
     }
 
