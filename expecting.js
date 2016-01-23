@@ -302,13 +302,13 @@
    * @api public
    */
 
-  Assertion.prototype.greaterThan =
-    Assertion.prototype.above = function (n) {
-      this.assert(
-        this.obj > n
-        , function () { return 'expected ' + i(this.obj) + ' to be above ' + n }
-        , function () { return 'expected ' + i(this.obj) + ' to be below ' + n })
-      return this
+  Assertion.prototype.greaterThan = Assertion.prototype.above = function (n) {
+    this.assert(
+      this.obj > n,
+      function () { return 'expected ' + i(this.obj) + ' to be above ' + n },
+      function () { return 'expected ' + i(this.obj) + ' to be below ' + n }
+    )
+    return this
   }
 
   /**
@@ -318,13 +318,13 @@
    * @api public
    */
 
-  Assertion.prototype.lessThan =
-    Assertion.prototype.below = function (n) {
-      this.assert(
-        this.obj < n
-        , function () { return 'expected ' + i(this.obj) + ' to be below ' + n }
-        , function () { return 'expected ' + i(this.obj) + ' to be above ' + n })
-      return this
+  Assertion.prototype.lessThan = Assertion.prototype.below = function (n) {
+    this.assert(
+      this.obj < n,
+      function () { return 'expected ' + i(this.obj) + ' to be below ' + n },
+      function () { return 'expected ' + i(this.obj) + ' to be above ' + n }
+    )
+    return this
   }
 
   /**
@@ -336,9 +336,10 @@
 
   Assertion.prototype.match = function (regexp) {
     this.assert(
-      regexp.exec(this.obj)
-      , function () { return 'expected ' + i(this.obj) + ' to match ' + regexp }
-      , function () { return 'expected ' + i(this.obj) + ' not to match ' + regexp })
+      regexp.exec(this.obj),
+      function () { return 'expected ' + i(this.obj) + ' to match ' + regexp },
+      function () { return 'expected ' + i(this.obj) + ' not to match ' + regexp }
+    )
     return this
   }
 
@@ -351,11 +352,13 @@
 
   Assertion.prototype.length = function (n) {
     expect(this.obj).to.have.property('length')
+
     var len = this.obj.length
     this.assert(
-      n == len
-      , function () { return 'expected ' + i(this.obj) + ' to have a length of ' + n + ' but got ' + len }
-      , function () { return 'expected ' + i(this.obj) + ' to not have a length of ' + len })
+      n === len,
+      function () { return 'expected ' + i(this.obj) + ' to have a length of ' + n + ' but got ' + len },
+      function () { return 'expected ' + i(this.obj) + ' to not have a length of ' + len }
+    )
     return this
   }
 
@@ -370,13 +373,14 @@
   Assertion.prototype.property = function (name, val) {
     if (this.flags.own) {
       this.assert(
-        Object.prototype.hasOwnProperty.call(this.obj, name)
-        , function () { return 'expected ' + i(this.obj) + ' to have own property ' + i(name) }
-        , function () { return 'expected ' + i(this.obj) + ' to not have own property ' + i(name) })
+        Object.prototype.hasOwnProperty.call(this.obj, name),
+        function () { return 'expected ' + i(this.obj) + ' to have own property ' + i(name) },
+        function () { return 'expected ' + i(this.obj) + ' to not have own property ' + i(name) }
+      )
       return this
     }
 
-    if (this.flags.not && undefined !== val) {
+    if (this.flags.not && val !== undefined) {
       if (undefined === this.obj[name]) {
         throw new Error(i(this.obj) + ' has no property ' + i(name))
       }
@@ -389,21 +393,28 @@
       }
 
       this.assert(
-        hasProp
-        , function () { return 'expected ' + i(this.obj) + ' to have a property ' + i(name) }
-        , function () { return 'expected ' + i(this.obj) + ' to not have a property ' + i(name) })
+        hasProp,
+        function () { return 'expected ' + i(this.obj) + ' to have a property ' + i(name) },
+        function () { return 'expected ' + i(this.obj) + ' to not have a property ' + i(name) }
+      )
     }
 
-    if (undefined !== val) {
+    if (val !== undefined) {
       this.assert(
-        val === this.obj[name]
-        , function () { return 'expected ' + i(this.obj) + ' to have a property ' + i(name)
-          + ' of ' + i(val) + ', but got ' + i(this.obj[name]) }
-        , function () { return 'expected ' + i(this.obj) + ' to not have a property ' + i(name)
-          + ' of ' + i(val) })
+        val === this.obj[name],
+        function () {
+          return 'expected ' + i(this.obj) + ' to have a property ' + i(name) +
+            ' of ' + i(val) + ', but got ' + i(this.obj[name])
+        },
+        function () {
+          return 'expected ' + i(this.obj) + ' to not have a property ' + i(name) +
+            ' of ' + i(val)
+        }
+      )
     }
 
     this.obj = this.obj[name]
+
     return this
   }
 
