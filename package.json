@@ -4,7 +4,7 @@
   "description": "Assertion library for Node and browsers",
   "main": "expecting.js",
   "scripts": {
-    "test": "mocha"
+    "test": "standard && mocha"
   },
   "repository": {
     "type": "git",

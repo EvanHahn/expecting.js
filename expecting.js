@@ -1,6 +1,8 @@
 var i = require('util').inspect
 var isArray = require('lodash/isarray')
 var isRegExp = require('lodash/isregexp')
+var isArguments = require('lodash/isarguments')
+var isNil = require('lodash/isnil')
 
 /**
  * Exports.
@@ -594,16 +596,8 @@ function eql (a, b) {
   return objEquiv(a, b)
 }
 
-function isUndefinedOrNull (value) {
-  return value == null
-}
-
-function isArguments (object) {
-  return Object.prototype.toString.call(object) === '[object Arguments]'
-}
-
 function objEquiv (a, b) {
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
+  if (isNil(a) || isNil(b)) {
     return false
   }
   // an identical "prototype" property.
