@@ -223,49 +223,79 @@ describe('expect', function () {
     }
   })
 
-  it('should test arrays', function () {
-    expect([]).to.be.a('array')
-    expect([]).to.be.an('array')
+  describe('.to.be.a', function () {
+    it('tests arrays', function () {
+      expect([]).to.be.a('array')
+      expect([]).to.be.an('array')
+      expect([1, 2, 3]).to.be.an('array')
+      expect([undefined]).to.be.an('array')
 
-    assert.throws(function () {
-      expect({}).to.be.an('array')
-    }, /expected {} to be an array/)
-  })
+      expect(null).not.to.be.an('array')
+      expect(undefined).not.to.be.an('array')
+      expect({}).not.to.be.an('array')
+      expect({ length: 0 }).not.to.be.an('array')
+      expect({ length: 5 }).not.to.be.an('array')
 
-  it('should test regex', function () {
-    expect(/a/).to.be.an('regexp')
-    expect(/a/).to.be.a('regexp')
+      assert.throws(function () {
+        expect({}).to.be.an('array')
+      }, /expected {} to be an array/)
+    })
 
-    assert.throws(function () {
-      expect(null).to.be.a('regexp')
-    }, /expected null to be a regexp/)
-  })
+    it('tests regular expressions', function () {
+      expect(/a/).to.be.a('regexp')
+      expect(/a/).to.be.an('regexp')
+      expect(new RegExp('x')).to.be.a('regexp')
+      expect(new RegExp('x')).to.be.an('regexp')
 
-  it('should test objects', function () {
-    expect({}).to.be.an('object')
+      expect('').not.to.be.a('regexp')
 
-    assert.throws(function () {
-      expect(null).to.be.an('object')
-    }, /expected null to be an object/)
+      assert.throws(function () {
+        expect(null).to.be.a('regexp')
+      }, /expected null to be a regexp/)
+    })
+
+    it('tests objects', function () {
+      expect({}).to.be.an('object')
+
+      expect([]).not.to.be.an('object')
+      expect(0).not.to.be.an('object')
+      expect(null).not.to.be.an('object')
+      expect(void 0).not.to.be.an('object')
+
+      assert.throws(function () {
+        expect(null).to.be.an('object')
+      }, /expected null to be an object/)
+    })
+
+    it('tests strings', function () {
+      expect('').to.be.a('string')
+      expect('test').to.be.a('string')
+      expect('test').to.be.an('string')
+      expect(new String('test')).to.be.a('string')
+
+      assert.throws(function () {
+        expect(123).to.be.a('string')
+      }, /expected 123 to be a string/)
+    })
+
+    it('tests number', function () {
+      expect(0).to.be.a('number')
+      expect(123).to.be.a('number')
+      expect(0.123).to.be.a('number')
+      expect(-123).to.be.an('number')
+      expect(new Number(123)).to.be.a('number')
+
+      assert.throws(function () {
+        expect(123).not.to.be.a('number')
+      }, /expected 123 not to be a number/)
+    })
+
+    // TODO: more!
   })
 
   it('should test .equal()', function () {
     var foo
     expect(foo).to.be(undefined)
-  })
-
-  it('should test typeof', function () {
-    expect('test').to.be.a('string')
-
-    assert.throws(function () {
-      expect('test').to.not.be.a('string')
-    }, /expected 'test' not to be a string/)
-
-    expect(5).to.be.a('number')
-
-    assert.throws(function () {
-      expect(5).to.not.be.a('number')
-    }, /expected 5 not to be a number/)
   })
 
   it('should test instanceof', function () {
@@ -351,61 +381,54 @@ describe('expect', function () {
     }, /expected 4 to sort of equal 3/)
   })
 
-  it('should test equal(val)', function () {
-    expect('test').to.equal('test')
-    expect(1).to.equal(1)
+  describe('.to.be.empty', function () {
+    it('tests for emptiness', function () {
+      expect('').to.be.empty()
+      expect(new String('')).to.be.empty()
+      expect({}).to.be.empty()
+      expect([]).to.be.empty()
 
-    assert.throws(function () {
-      expect(4).to.equal(3)
-    }, /expected 4 to equal 3/)
+      expect('wow').not.to.be.empty()
+      expect(new String('wow')).not.to.be.empty()
+      expect([1, 2]).not.to.be.empty()
+      expect({ length: 0 }).not.to.be.empty()
 
-    assert.throws(function () {
-      expect('4').to.equal(4)
-    }, /expected '4' to equal 4/)
-  })
+      assert.throws(function () {
+        expect(null).to.be.empty()
+      }, /cannot determine emptiness of null/)
 
-  it('should test be(val)', function () {
-    expect('test').to.be('test')
-    expect(1).to.be(1)
+      assert.throws(function () {
+        expect(null).not.to.be.empty()
+      }, /cannot determine emptiness of null/)
 
-    assert.throws(function () {
-      expect(4).to.be(3)
-    }, /expected 4 to equal 3/)
+      assert.throws(function () {
+        expect(undefined).to.be.empty()
+      }, /cannot determine emptiness of undefined/)
 
-    assert.throws(function () {
-      expect('4').to.be(4)
-    }, /expected '4' to equal 4/)
-  })
+      assert.throws(function () {
+        expect(123).to.be.empty()
+      }, /cannot determine emptiness of 123/)
 
-  it('should test empty', function () {
-    expect('').to.be.empty()
-    expect({}).to.be.empty()
-    expect([]).to.be.empty()
-    expect({ length: 0 }).to.be.empty()
+      assert.throws(function () {
+        expect({ a: 'b' }).to.be.empty()
+      }, /expected { a: 'b' } to be empty/)
 
-    assert.throws(function () {
-      expect(null).to.be.empty()
-    }, /expected null to be an object/)
+      assert.throws(function () {
+        expect({ length: '0' }).to.be.empty()
+      }, /expected { length: '0' } to be empty/)
 
-    assert.throws(function () {
-      expect({ a: 'b' }).to.be.empty()
-    }, /expected { a: 'b' } to be empty/)
+      assert.throws(function () {
+        expect('asd').to.be.empty()
+      }, /expected 'asd' to be empty/)
 
-    assert.throws(function () {
-      expect({ length: '0' }).to.be.empty()
-    }, /expected { length: '0' } to be empty/)
+      assert.throws(function () {
+        expect('').to.not.be.empty()
+      }, /expected '' to not be empty/)
 
-    assert.throws(function () {
-      expect('asd').to.be.empty()
-    }, /expected 'asd' to be empty/)
-
-    assert.throws(function () {
-      expect('').to.not.be.empty()
-    }, /expected '' to not be empty/)
-
-    assert.throws(function () {
-      expect({}).to.not.be.empty()
-    }, /expected {} to not be empty/)
+      assert.throws(function () {
+        expect({}).to.not.be.empty()
+      }, /expected {} to not be empty/)
+    })
   })
 
   it('should test property(name)', function () {

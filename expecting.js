@@ -4,11 +4,11 @@ var indexOf = require('lodash/indexof')
 var isArray = require('lodash/isarray')
 var isEqual = require('lodash/isequal')
 var isFunction = require('lodash/isfunction')
-var isNumber = require('lodash/isnumber')
-var isObject = require('lodash/isobject')
 var isRegExp = require('lodash/isregexp')
 var isString = require('lodash/isstring')
 var keys = require('lodash/keys')
+var isEmpty = require('lodash/isempty')
+var isObject = require('lodash/isobject')
 
 /**
  * Exports.
@@ -190,28 +190,16 @@ Assertion.prototype['throw'] = Assertion.prototype.throwError = Assertion.protot
  */
 
 Assertion.prototype.empty = function () {
-  var expectation
-
-  if (isObject(this.obj) && !isArray(this.obj)) {
-    if (isNumber(this.obj.length)) {
-      expectation = !this.obj.length
-    } else {
-      expectation = !keys(this.obj).length
-    }
+  if (isString(this.obj) || isArray(this.obj) || isObject(this.obj)) {
+    this.assert(
+      isEmpty(this.obj),
+      function () { return 'expected ' + i(this.obj) + ' to be empty' },
+      function () { return 'expected ' + i(this.obj) + ' to not be empty' }
+    )
   } else {
-    if (!isString(this.obj)) {
-      expect(this.obj).to.be.an('object')
-    }
-
-    expect(this.obj).to.have.property('length')
-    expectation = !this.obj.length
+    var message = function () { return 'cannot determine emptiness of ' + i(this.obj) }
+    this.assert(this.flags.not, message, message)
   }
-
-  this.assert(
-    expectation,
-    function () { return 'expected ' + i(this.obj) + ' to be empty' },
-    function () { return 'expected ' + i(this.obj) + ' to not be empty' }
-  )
   return this
 }
 
@@ -272,19 +260,14 @@ Assertion.prototype.within = function (start, finish) {
 
 Assertion.prototype.a = Assertion.prototype.an = function (type) {
   if (isString(type)) {
-    var specialTypeofs = {
-      array: isArray(this.obj),
-      regexp: isRegExp(this.obj),
-      object: typeof this.obj === 'object' && this.obj !== null
-    }
-
-    var condition = type in specialTypeofs ? specialTypeofs[type] : typeof this.obj === type
+    var expectedType = '[object ' + type + ']'
+    var actualType = Object.prototype.toString.call(this.obj).toLowerCase()
 
     var n = /^[aeiou]/.test(type) ? 'n' : ''
     var okMessage = function () { return 'expected ' + i(this.obj) + ' to be a' + n + ' ' + type }
     var notMessage = function () { return 'expected ' + i(this.obj) + ' not to be a' + n + ' ' + type }
 
-    this.assert(condition, okMessage, notMessage)
+    this.assert(expectedType === actualType, okMessage, notMessage)
   } else {
     // instanceof
     var name = type.name || 'supplied constructor'
