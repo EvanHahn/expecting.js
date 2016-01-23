@@ -1,11 +1,12 @@
+var bind = require('lodash/bind')
 var i = require('util').inspect
 var isArray = require('lodash/isarray')
-var isRegExp = require('lodash/isregexp')
 var isEqual = require('lodash/isequal')
-var isString = require('lodash/isstring')
 var isFunction = require('lodash/isfunction')
 var isNumber = require('lodash/isnumber')
 var isObject = require('lodash/isobject')
+var isRegExp = require('lodash/isregexp')
+var isString = require('lodash/isstring')
 
 /**
  * Exports.
@@ -516,16 +517,6 @@ Assertion.prototype.fail = function (msg) {
   var error = function () { return msg || 'explicit failure' }
   this.assert(false, error, error)
   return this
-}
-
-/**
- * Function bind implementation.
- */
-
-function bind (fn, scope) {
-  return function () {
-    return fn.apply(scope, arguments)
-  }
 }
 
 /**
