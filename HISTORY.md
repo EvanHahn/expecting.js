@@ -4,6 +4,7 @@ unreleased
  * update: non-array objects with `length` properties are no longer considered empty
  * update: change error message when determining emptiness of values that are not strings, arrays, or objects
 
+ * fix: `expect(NaN).to.be(NaN)` is no longer a failure
  * fix: object versions of literals (like `new String`) now work better
 
  * remove: `expect.version`

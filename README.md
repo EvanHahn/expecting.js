@@ -59,9 +59,11 @@ expect(0).to.not.be.ok();
 
 ```js
 expect(1).to.be(1)
-expect(NaN).not.to.equal(NaN);
+expect('hi').to.be('hi')
+expect(NaN).to.be(NaN)
+
 expect(1).not.to.be(true)
-expect('1').to.not.be(1);
+expect('1').to.not.be(1)
 ```
 
 **eql**: asserts loose equality that works with objects

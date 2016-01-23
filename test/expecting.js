@@ -34,6 +34,20 @@ describe('expect', function () {
       }, /expected 'test' to equal false/)
     })
 
+    it('tests numbers', function () {
+      expect(0).to.be(0)
+      expect(1).to.be(1)
+      expect(+0).to.be(-0)
+      expect(+0).to.be(+0)
+
+      expect(1).not.to.be(2)
+      expect('1').not.to.be(2)
+
+      assert.throws(function () {
+        expect(1).to.be(2)
+      }, /expected 1 to equal 2/)
+    })
+
     it('tests objects', function () {
       var a = {}
       var b = {}
@@ -89,6 +103,19 @@ describe('expect', function () {
       assert.throws(function () {
         expect(123).to.be(void 0)
       }, /expected 123 to equal undefined/)
+    })
+
+    it('tests NaN', function () {
+      expect(0 / 0).to.be(0 / 0)
+      expect(NaN).to.be(0 / 0)
+      expect(0 / 0).to.be(NaN)
+
+      expect(0).not.to.be(NaN)
+      expect(0).not.to.be(0 / 0)
+
+      assert.throws(function () {
+        expect(123).to.be(0 / 0)
+      }, /expected 123 to equal NaN/)
     })
   })
 

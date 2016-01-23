@@ -2,13 +2,14 @@ var bind = require('lodash/bind')
 var i = require('util').inspect
 var indexOf = require('lodash/indexof')
 var isArray = require('lodash/isarray')
+var isEmpty = require('lodash/isempty')
 var isEqual = require('lodash/isequal')
 var isFunction = require('lodash/isfunction')
+var isObject = require('lodash/isobject')
 var isRegExp = require('lodash/isregexp')
 var isString = require('lodash/isstring')
+var isnan = require('lodash/isnan')
 var keys = require('lodash/keys')
-var isEmpty = require('lodash/isempty')
-var isObject = require('lodash/isobject')
 
 /**
  * Exports.
@@ -210,8 +211,10 @@ Assertion.prototype.empty = function () {
  */
 
 Assertion.prototype.be = Assertion.prototype.equal = function (obj) {
+  var isEqual = obj === this.obj || (isnan(obj) && isnan(this.obj))
+
   this.assert(
-    obj === this.obj,
+    isEqual,
     function () { return 'expected ' + i(this.obj) + ' to equal ' + i(obj) },
     function () { return 'expected ' + i(this.obj) + ' to not equal ' + i(obj) }
   )
