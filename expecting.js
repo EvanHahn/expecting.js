@@ -37,31 +37,33 @@
    */
 
   function Assertion (obj, flag, parent) {
+    var i, l
+    var self = this
+
     this.obj = obj
     this.flags = {}
 
-    if (undefined != parent) {
+    if (parent !== undefined) {
       this.flags[flag] = true
 
-      for (var i in parent.flags) {
+      for (i in parent.flags) {
         if (parent.flags.hasOwnProperty(i)) {
           this.flags[i] = true
         }
       }
     }
 
-    var $flags = flag ? flags[flag] : keys(flags),
-      self = this
+    var $flags = flag ? flags[flag] : keys(flags)
 
     if ($flags) {
-      for (var i = 0, l = $flags.length; i < l; i++) {
+      for (i = 0, l = $flags.length; i < l; i++) {
         // avoid recursion
         if (this.flags[$flags[i]]) continue
 
-        var name = $flags[i],
-          assertion = new Assertion(this.obj, name, this)
+        var name = $flags[i]
+        var assertion = new Assertion(this.obj, name, this)
 
-        if ('function' == typeof Assertion.prototype[name]) {
+        if (typeof Assertion.prototype[name] === 'function') {
           // clone the function, make sure we dont touch the prot reference
           var old = this[name]
           this[name] = function () {
@@ -69,7 +71,7 @@
           }
 
           for (var fn in Assertion.prototype) {
-            if (Assertion.prototype.hasOwnProperty(fn) && fn != name) {
+            if (Assertion.prototype.hasOwnProperty(fn) && fn !== name) {
               this[name][fn] = bind(assertion[fn], assertion)
             }
           }
