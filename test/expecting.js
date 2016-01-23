@@ -49,45 +49,60 @@ describe('expect', function () {
         expect({}).to.be({ hi: 5 })
       }, /expected {} to equal { hi: 5 }/)
     })
+
+    it('tests arrays', function () {
+      var a = []
+      var b = []
+
+      expect(a).to.be(a)
+
+      expect(a).not.to.be(b)
+      expect(b).not.to.be(a)
+
+      assert.throws(function () {
+        expect([]).to.be([1, 2])
+      }, /expected \[\] to equal \[ 1, 2 \]/)
+    })
   })
 
   // TODO: to.equal
 
-  it('should work in its basic form', function () {
-    expect('test').to.be.a('string')
-  })
+  describe('.to.be.ok', function () {
+    it('works on truthy values', function () {
+      expect(true).to.be.ok()
+      expect(' ').to.be.ok()
+      expect(3).to.be.ok()
+      expect(/hello/).to.be.ok()
+      expect([]).to.be.ok()
+      expect({}).to.be.ok()
+      expect(new Boolean(true)).to.be.ok()
+      expect(new Boolean(false)).to.be.ok()
 
-  it('should allow not.to', function () {
-    expect(true).not.to.be(false)
+      assert.throws(function () {
+        expect(false).to.be.ok()
+      }, /expected false to be truthy/)
 
-    assert.throws(function () {
-      expect(false).not.to.be(false)
-    }, /expected false to not equal false/)
-  })
+      assert.throws(function () {
+        expect('').to.be.ok()
+      }, /expected '' to be truthy/)
+    })
 
-  it('should test ok', function () {
-    expect(true).to.be.ok()
-    expect(false).to.not.be.ok()
-    expect(1).to.be.ok()
-    expect(0).to.not.be.ok()
+    it('works on falsy values', function () {
+      expect(false).not.to.be.ok()
+      expect('').not.to.be.ok()
+      expect(0).not.to.be.ok()
+      expect(0 / 0).not.to.be.ok()
+      expect(null).not.to.be.ok()
+      expect(void 0).not.to.be.ok()
 
-    assert.throws(function () {
-      expect('').to.be.ok()
-    }, /expected '' to be truthy/)
+      assert.throws(function () {
+        expect(true).not.to.be.ok()
+      }, /expected true to be falsy/)
 
-    assert.throws(function () {
-      expect('test').to.not.be.ok()
-    }, /expected 'test' to be falsy/)
-  })
-
-  it('should test false', function () {
-    expect(false).to.be(false)
-    expect(true).to.not.be(false)
-    expect(0).to.not.be(false)
-
-    assert.throws(function () {
-      expect('').to.be(false)
-    }, /expected '' to equal false/)
+      assert.throws(function () {
+        expect('wow').not.to.be.ok()
+      }, /expected 'wow' to be falsy/)
+    })
   })
 
   it('should test functions with arguments', function () {
