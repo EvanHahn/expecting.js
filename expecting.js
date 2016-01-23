@@ -7,6 +7,7 @@ var isNumber = require('lodash/isnumber')
 var isObject = require('lodash/isobject')
 var isRegExp = require('lodash/isregexp')
 var isString = require('lodash/isstring')
+var keys = require('lodash/keys')
 
 /**
  * Exports.
@@ -533,22 +534,6 @@ function every (arr, fn, thisObj) {
     }
   }
   return true
-}
-
-function keys (obj) {
-  if (Object.keys) {
-    return Object.keys(obj)
-  }
-
-  var keys = []
-
-  for (var i in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, i)) {
-      keys.push(i)
-    }
-  }
-
-  return keys
 }
 
 /**
