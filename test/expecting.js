@@ -3,7 +3,7 @@ var assert = require('assert')
 
 var isNameSupported
 ;(function a () {
-  isNameSupported = 'a' === a.name
+  isNameSupported = a.name === 'a'
 })()
 
 describe('expect', function () {
@@ -73,11 +73,11 @@ describe('expect', function () {
 
   it('should test for exceptions', function () {
     function itThrows () {
-      a.b.c
+      a.b.c  // eslint-disable-line no-undef
     }
 
     function itThrowsString () {
-      throw 'aaa'
+      throw 'aaa'  // eslint-disable-line no-throw-literal
     }
 
     function itThrowsMessage () {
@@ -85,7 +85,7 @@ describe('expect', function () {
     }
 
     var anonItThrows = function () {
-      a.b.c
+      a.b.c  // eslint-disable-line no-undef
     }
 
     function itWorks () {
@@ -548,5 +548,4 @@ describe('expect', function () {
       expect().fail('explicit failure with message')
     }, 'explicit failure with message')
   })
-
 })
