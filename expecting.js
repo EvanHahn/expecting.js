@@ -1,8 +1,7 @@
 var i = require('util').inspect
 var isArray = require('lodash/isarray')
 var isRegExp = require('lodash/isregexp')
-var isArguments = require('lodash/isarguments')
-var isNil = require('lodash/isnil')
+var isEqual = require('lodash/isequal')
 
 /**
  * Exports.
@@ -566,78 +565,5 @@ function keys (obj) {
  */
 
 function eql (a, b) {
-  if (a === b) { return true }
-
-  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(a) && Buffer.isBuffer(b)) {
-    if (a.length !== b.length) { return false }
-
-    for (var i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) { return false }
-    }
-
-    return true
-  }
-
-  if (a instanceof Date && b instanceof Date) {
-    return a.getTime() === b.getTime()
-  }
-
-  if (typeof a !== 'object' && typeof b !== 'object') {
-    return a == b  // eslint-disable-line eqeqeq
-  }
-
-  if (isRegExp(a) && isRegExp(b)) {
-    return a.source === b.source &&
-      a.global === b.global &&
-      a.ignoreCase === b.ignoreCase &&
-      a.multiline === b.multiline
-  }
-
-  return objEquiv(a, b)
-}
-
-function objEquiv (a, b) {
-  if (isNil(a) || isNil(b)) {
-    return false
-  }
-  // an identical "prototype" property.
-  if (a.prototype !== b.prototype) { return false }
-  // ~~~I've managed to break Object.keys through screwy arguments passing.
-  //   Converting to array solves the problem.
-  if (isArguments(a)) {
-    if (!isArguments(b)) {
-      return false
-    }
-    a = pSlice.call(a)
-    b = pSlice.call(b)
-    return expect.eql(a, b)
-  }
-  try {
-    var ka = keys(a)
-    var kb = keys(b)
-    var key, i
-  } catch (e) { // happens when one is a string literal and the other isn't
-    return false
-  }
-  // having the same number of owned properties (keys incorporates hasOwnProperty)
-  if (ka.length !== kb.length) {
-    return false
-  }
-  // the same set of keys (although not necessarily the same order),
-  ka.sort()
-  kb.sort()
-  // ~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i]) {
-      return false
-    }
-  }
-  // equivalent values for every corresponding key, and
-  // ~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i]
-    if (!eql(a[key], b[key]))
-      return false
-  }
-  return true
+  return a == b || isEqual(a, b)  // eslint-disable-line eqeqeq
 }
