@@ -1,5 +1,6 @@
 var i = require('util').inspect
 var isArray = require('lodash/isarray')
+var isRegExp = require('lodash/isregexp')
 
 /**
  * Exports.
@@ -539,24 +540,6 @@ function every (arr, fn, thisObj) {
   return true
 }
 
-function isRegExp (re) {
-  var s
-  try {
-    s = '' + re
-  } catch (e) {
-    return false
-  }
-
-  return re instanceof RegExp || // easy case
-  // duck-type for context-switching evalcx case
-  typeof (re) === 'function' &&
-  re.constructor.name === 'RegExp' &&
-  re.compile &&
-  re.test &&
-  re.exec &&
-  s.match(/^\/.*\/[gim]{0,3}$/)
-}
-
 function keys (obj) {
   if (Object.keys) {
     return Object.keys(obj)
@@ -651,8 +634,9 @@ function objEquiv (a, b) {
   kb.sort()
   // ~~~cheap key test
   for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
+    if (ka[i] != kb[i]) {
       return false
+    }
   }
   // equivalent values for every corresponding key, and
   // ~~~possibly expensive deep test
