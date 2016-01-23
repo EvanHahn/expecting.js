@@ -1,3 +1,5 @@
+/* eslint-disable no-new-wrappers */
+
 var expect = require('../expecting')
 var assert = require('assert')
 
@@ -7,18 +9,52 @@ var isNameSupported
 })()
 
 describe('expect', function () {
-  it('should work in its basic form', function () {
-    expect('test').to.be.a('string')
+  describe('.to.be', function () {
+    it('tests `true`', function () {
+      expect(true).to.be(true)
+
+      expect(false).not.to.be(true)
+      expect(1).not.to.be(true)
+      expect('true').not.to.be(true)
+      expect(new Boolean(true)).not.to.be(true)
+
+      assert.throws(function () {
+        expect('test').to.be(true)
+      }, /expected 'test' to equal true/)
+    })
+
+    it('tests `false`', function () {
+      expect(false).to.be(false)
+
+      expect(true).not.to.be(false)
+      expect(1).not.to.be(false)
+      expect('false').not.to.be(false)
+      expect(new Boolean(false)).not.to.be(false)
+
+      assert.throws(function () {
+        expect('test').to.be(false)
+      }, /expected 'test' to equal false/)
+    })
+
+    it('tests objects', function () {
+      var a = {}
+      var b = {}
+
+      expect(a).to.be(a)
+
+      expect(a).not.to.be(b)
+      expect(b).not.to.be(a)
+
+      assert.throws(function () {
+        expect({}).to.be({ hi: 5 })
+      }, /expected {} to equal { hi: 5 }/)
+    })
   })
 
-  it('should test true', function () {
-    expect(true).to.be(true)
-    expect(false).to.not.be(true)
-    expect(1).to.not.be(true)
+  // TODO: to.equal
 
-    assert.throws(function () {
-      expect('test').to.be(true)
-    }, "expected 'test' to equal true")
+  it('should work in its basic form', function () {
+    expect('test').to.be.a('string')
   })
 
   it('should allow not.to', function () {
@@ -26,7 +62,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(false).not.to.be(false)
-    }, 'expected false to not equal false')
+    }, /expected false to not equal false/)
   })
 
   it('should test ok', function () {
@@ -37,11 +73,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect('').to.be.ok()
-    }, "expected '' to be truthy")
+    }, /expected '' to be truthy/)
 
     assert.throws(function () {
       expect('test').to.not.be.ok()
-    }, "expected 'test' to be falsy")
+    }, /expected 'test' to be falsy/)
   })
 
   it('should test false', function () {
@@ -51,7 +87,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect('').to.be(false)
-    }, "expected '' to equal false")
+    }, /expected '' to equal false/)
   })
 
   it('should test functions with arguments', function () {
@@ -106,7 +142,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(itThrowsMessage).to.throwException(/no match/)
-    }, "expected 'tobi' to match /no match/")
+    }, /expected 'tobi' to match \/no match\//)
 
     var subject2
 
@@ -121,7 +157,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(itThrowsString).to.throwException(/no match/i)
-    }, "expected 'aaa' to match /no match/i")
+    }, /expected 'aaa' to match \/no match\/i/)
 
     var called = false
 
@@ -141,34 +177,34 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(5).to.throwException()
-    }, 'expected 5 to be a function')
+    }, /expected 5 to be a function/)
 
     assert.throws(function () {
       expect(anonItThrows).not.to.throwException()
-    }, 'expected fn not to throw an exception')
+    }, /expected fn not to throw an exception/)
 
     assert.throws(function () {
       expect(anonItWorks).to.throwException()
-    }, 'expected fn to throw an exception')
+    }, /expected fn to throw an exception/)
 
     if (isNameSupported) {
       assert.throws(function () {
         expect(itWorks).to.throwException()
-      }, 'expected itWorks to throw an exception')
+      }, /expected itWorks to throw an exception/)
     } else {
       assert.throws(function () {
         expect(itWorks).to.throwException()
-      }, 'expected fn to throw an exception')
+      }, /expected fn to throw an exception/)
     }
 
     if (isNameSupported) {
       assert.throws(function () {
         expect(itThrows).not.to.throwException()
-      }, 'expected itThrows not to throw an exception')
+      }, /expected itThrows not to throw an exception/)
     } else {
       assert.throws(function () {
         expect(anonItThrows).not.to.throwException()
-      }, 'expected fn not to throw an exception')
+      }, /expected fn not to throw an exception/)
     }
   })
 
@@ -178,7 +214,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect({}).to.be.an('array')
-    }, 'expected {} to be an array')
+    }, /expected {} to be an array/)
   })
 
   it('should test regex', function () {
@@ -187,7 +223,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(null).to.be.a('regexp')
-    }, 'expected null to be a regexp')
+    }, /expected null to be a regexp/)
   })
 
   it('should test objects', function () {
@@ -195,7 +231,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(null).to.be.an('object')
-    }, 'expected null to be an object')
+    }, /expected null to be an object/)
   })
 
   it('should test .equal()', function () {
@@ -208,13 +244,13 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect('test').to.not.be.a('string')
-    }, "expected 'test' not to be a string")
+    }, /expected 'test' not to be a string/)
 
     expect(5).to.be.a('number')
 
     assert.throws(function () {
       expect(5).to.not.be.a('number')
-    }, 'expected 5 not to be a number')
+    }, /expected 5 not to be a number/)
   })
 
   it('should test instanceof', function () {
@@ -224,11 +260,11 @@ describe('expect', function () {
     if (isNameSupported) {
       assert.throws(function () {
         expect(3).to.be.a(Foo)
-      }, 'expected 3 to be an instance of Foo')
+      }, /expected 3 to be an instance of Foo/)
     } else {
       assert.throws(function () {
         expect(3).to.be.a(Foo)
-      }, 'expected 3 to be an instance of supplied constructor')
+      }, /expected 3 to be an instance of supplied constructor/)
     }
   })
 
@@ -239,11 +275,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(5).to.not.be.within(4, 6)
-    }, 'expected 5 to not be within 4..6')
+    }, /expected 5 to not be within 4..6/)
 
     assert.throws(function () {
       expect(10).to.be.within(50, 100)
-    }, 'expected 10 to be within 50..100')
+    }, /expected 10 to be within 50..100/)
   })
 
   it('should test above(n)', function () {
@@ -254,11 +290,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(5).to.be.above(6)
-    }, 'expected 5 to be above 6')
+    }, /expected 5 to be above 6/)
 
     assert.throws(function () {
       expect(10).to.not.be.above(6)
-    }, 'expected 10 to be below 6')
+    }, /expected 10 to be below 6/)
   })
 
   it('should test match(regexp)', function () {
@@ -267,11 +303,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect('foobar').to.match(/^bar/i)
-    }, "expected 'foobar' to match /^bar/i")
+    }, /expected 'foobar' to match \/\^bar\/i/)
 
     assert.throws(function () {
       expect('foobar').to.not.match(/^foo/i)
-    }, "expected 'foobar' not to match /^foo/i")
+    }, /expected 'foobar' not to match \/\^foo\/i/)
   })
 
   it('should test length(n)', function () {
@@ -281,11 +317,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(4).to.have.length(3)
-    }, "expected 4 to have a property 'length'")
+    }, /expected 4 to have a property 'length'/)
 
     assert.throws(function () {
       expect('asd').to.not.have.length(3)
-    }, "expected 'asd' to not have a length of 3")
+    }, /expected 'asd' to not have a length of 3/)
   })
 
   it('should test eql(val)', function () {
@@ -297,7 +333,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(4).to.eql(3)
-    }, 'expected 4 to sort of equal 3')
+    }, /expected 4 to sort of equal 3/)
   })
 
   it('should test equal(val)', function () {
@@ -306,11 +342,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(4).to.equal(3)
-    }, 'expected 4 to equal 3')
+    }, /expected 4 to equal 3/)
 
     assert.throws(function () {
       expect('4').to.equal(4)
-    }, "expected '4' to equal 4")
+    }, /expected '4' to equal 4/)
   })
 
   it('should test be(val)', function () {
@@ -319,11 +355,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(4).to.be(3)
-    }, 'expected 4 to equal 3')
+    }, /expected 4 to equal 3/)
 
     assert.throws(function () {
       expect('4').to.be(4)
-    }, "expected '4' to equal 4")
+    }, /expected '4' to equal 4/)
   })
 
   it('should test empty', function () {
@@ -334,27 +370,27 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(null).to.be.empty()
-    }, 'expected null to be an object')
+    }, /expected null to be an object/)
 
     assert.throws(function () {
       expect({ a: 'b' }).to.be.empty()
-    }, "expected { a: 'b' } to be empty")
+    }, /expected { a: 'b' } to be empty/)
 
     assert.throws(function () {
       expect({ length: '0' }).to.be.empty()
-    }, "expected { length: '0' } to be empty")
+    }, /expected { length: '0' } to be empty/)
 
     assert.throws(function () {
       expect('asd').to.be.empty()
-    }, "expected 'asd' to be empty")
+    }, /expected 'asd' to be empty/)
 
     assert.throws(function () {
       expect('').to.not.be.empty()
-    }, "expected '' to not be empty")
+    }, /expected '' to not be empty/)
 
     assert.throws(function () {
       expect({}).to.not.be.empty()
-    }, 'expected {} to not be empty')
+    }, /expected {} to not be empty/)
   })
 
   it('should test property(name)', function () {
@@ -364,11 +400,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect('asd').to.have.property('foo')
-    }, "expected 'asd' to have a property 'foo'")
+    }, /expected 'asd' to have a property 'foo'/)
 
     assert.throws(function () {
       expect({ length: undefined }).to.not.have.property('length')
-    }, "expected { length: undefined } to not have a property 'length'")
+    }, /expected { length: undefined } to not have a property 'length'/)
   })
 
   it('should test property(name, val)', function () {
@@ -377,19 +413,19 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect('asd').to.have.property('length', 4)
-    }, "expected 'asd' to have a property 'length' of 4, but got 3")
+    }, /expected 'asd' to have a property 'length' of 4, but got 3/)
 
     assert.throws(function () {
       expect('asd').to.not.have.property('length', 3)
-    }, "expected 'asd' to not have a property 'length' of 3")
+    }, /expected 'asd' to not have a property 'length' of 3/)
 
     assert.throws(function () {
       expect('asd').to.not.have.property('foo', 3)
-    }, "'asd' has no property 'foo'")
+    }, /'asd' has no property 'foo'/)
 
     assert.throws(function () {
       expect({ length: undefined }).to.not.have.property('length', undefined)
-    }, "expected { length: undefined } to not have a property 'length'")
+    }, /expected { length: undefined } to not have a property 'length'/)
   })
 
   it('should test own.property(name)', function () {
@@ -398,7 +434,7 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect({ length: 12 }).to.not.have.own.property('length')
-    }, "expected { length: 12 } to not have own property 'length'")
+    }, /expected { length: 12 } to not have own property 'length'/)
   })
 
   it('should test string()', function () {
@@ -410,15 +446,15 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(3).to.contain('baz')
-    }, "expected 3 to contain 'baz'")
+    }, /expected 3 to contain 'baz'/)
 
     assert.throws(function () {
       expect('foobar').to.contain('baz')
-    }, "expected 'foobar' to contain 'baz'")
+    }, /expected 'foobar' to contain 'baz'/)
 
     assert.throws(function () {
       expect('foobar').to.not.contain('bar')
-    }, "expected 'foobar' to not contain 'bar'")
+    }, /expected 'foobar' to not contain 'bar'/)
   })
 
   it('should test contain()', function () {
@@ -431,11 +467,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(['foo']).to.contain('bar')
-    }, "expected [ 'foo' ] to contain 'bar'")
+    }, /expected \[ 'foo' \] to contain 'bar'/)
 
     assert.throws(function () {
       expect(['bar', 'foo']).to.not.contain('foo')
-    }, "expected [ 'bar', 'foo' ] to not contain 'foo'")
+    }, /expected \[ 'bar', 'foo' \] to not contain 'foo'/)
   })
 
   it('should test keys(array)', function () {
@@ -460,51 +496,51 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect({ foo: 1 }).to.have.keys()
-    }, 'keys required')
+    }, /keys required/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.have.keys([])
-    }, 'keys required')
+    }, /keys required/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.not.have.keys([])
-    }, 'keys required')
+    }, /keys required/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.include.keys([])
-    }, 'keys required')
+    }, /keys required/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.have.keys(['bar'])
-    }, "expected { foo: 1 } to include key 'bar'")
+    }, /expected { foo: 1 } to include key 'bar'/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.have.keys(['bar', 'baz'])
-    }, "expected { foo: 1 } to include keys 'bar', and 'baz'")
+    }, /expected { foo: 1 } to include keys 'bar', and 'baz'/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.have.keys(['foo', 'bar', 'baz'])
-    }, "expected { foo: 1 } to include keys 'foo', 'bar', and 'baz'")
+    }, /expected { foo: 1 } to include keys 'foo', 'bar', and 'baz'/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.not.have.keys(['foo'])
-    }, "expected { foo: 1 } to not include key 'foo'")
+    }, /expected { foo: 1 } to not include key 'foo'/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.not.have.keys(['foo'])
-    }, "expected { foo: 1 } to not include key 'foo'")
+    }, /expected { foo: 1 } to not include key 'foo'/)
 
     assert.throws(function () {
       expect({ foo: 1, bar: 2 }).to.not.have.keys(['foo', 'bar'])
-    }, "expected { foo: 1, bar: 2 } to not include keys 'foo', and 'bar'")
+    }, /expected { foo: 1, bar: 2 } to not include keys 'foo', and 'bar'/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.not.include.keys(['foo'])
-    }, "expected { foo: 1 } to not include key 'foo'")
+    }, /expected { foo: 1 } to not include key 'foo'/)
 
     assert.throws(function () {
       expect({ foo: 1 }).to.include.keys('foo', 'bar')
-    }, "expected { foo: 1 } to include keys 'foo', and 'bar'")
+    }, /expected { foo: 1 } to include keys 'foo', and 'bar'/)
 
     // only
     expect({ foo: 1, bar: 1 }).to.only.have.keys('foo', 'bar')
@@ -512,11 +548,11 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect({ a: 'b', c: 'd' }).to.only.have.keys('a', 'b', 'c')
-    }, "expected { a: 'b', c: 'd' } to only have keys 'a', 'b', and 'c'")
+    }, /expected { a: 'b', c: 'd' } to only have keys 'a', 'b', and 'c'/)
 
     assert.throws(function () {
       expect({ a: 'b', c: 'd' }).to.only.have.keys('a')
-    }, "expected { a: 'b', c: 'd' } to only have key 'a'")
+    }, /expected { a: 'b', c: 'd' } to only have key 'a'/)
   })
 
   it('should allow chaining with `and`', function () {
@@ -526,22 +562,22 @@ describe('expect', function () {
 
     assert.throws(function () {
       expect(5).to.be.a('number').and.not.be(5)
-    }, 'expected 5 to not equal 5')
+    }, /expected 5 to not equal 5/)
 
     assert.throws(function () {
       expect(5).to.be.a('number').and.not.be(6).and.not.be.above(4)
-    }, 'expected 5 to be below 4')
+    }, /expected 5 to be below 4/)
   })
 
   it('should fail with `fail`', function () {
     assert.throws(function () {
       expect().fail()
-    }, 'explicit failure')
+    }, /explicit failure/)
   })
 
   it('should fail with `fail` and custom message', function () {
     assert.throws(function () {
       expect().fail('explicit failure with message')
-    }, 'explicit failure with message')
+    }, /explicit failure with message/)
   })
 })

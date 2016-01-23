@@ -1,5 +1,6 @@
 var bind = require('lodash/bind')
 var i = require('util').inspect
+var indexOf = require('lodash/indexof')
 var isArray = require('lodash/isarray')
 var isEqual = require('lodash/isequal')
 var isFunction = require('lodash/isfunction')
@@ -16,8 +17,8 @@ var keys = require('lodash/keys')
 module.exports = expect
 
 /**
-  * Possible assertion flags.
-  */
+ * Possible assertion flags.
+ */
 
 var flags = {
   not: ['to', 'be', 'have', 'include', 'only'],
@@ -435,7 +436,7 @@ Assertion.prototype.string = Assertion.prototype.contain = function (obj) {
     )
   } else {
     this.assert(
-      ~this.obj.indexOf(obj),
+      ~indexOf(this.obj, obj),
       function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
       function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) }
     )
