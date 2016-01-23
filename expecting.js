@@ -190,7 +190,7 @@ Assertion.prototype.empty = function () {
   var expectation
 
   if (typeof this.obj === 'object' && this.obj !== null && !isArray(this.obj)) {
-    if ('number' == typeof this.obj.length) {
+    if (typeof this.obj.length === 'number') {
       expectation = !this.obj.length
     } else {
       expectation = !keys(this.obj).length
@@ -235,7 +235,7 @@ Assertion.prototype.be = Assertion.prototype.equal = function (obj) {
 
 Assertion.prototype.eql = function (obj) {
   this.assert(
-    expect.eql(this.obj, obj),
+    eql(this.obj, obj),
     function () { return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) },
     function () { return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) },
     obj
@@ -538,37 +538,6 @@ function every (arr, fn, thisObj) {
   return true
 }
 
-// https://gist.github.com/1044128/
-var getOuterHTML = function (element) {
-  if ('outerHTML' in element) return element.outerHTML
-  var ns = 'http://www.w3.org/1999/xhtml'
-  var container = document.createElementNS(ns, '_')
-  var xmlSerializer = new XMLSerializer()
-  var html
-  if (document.xmlVersion) {
-    return xmlSerializer.serializeToString(element)
-  } else {
-    container.appendChild(element.cloneNode(false))
-    html = container.innerHTML.replace('><', '>' + element.innerHTML + '<')
-    container.innerHTML = ''
-    return html
-  }
-}
-
-// Returns true if object is a DOM element.
-var isDOMElement = function (object) {
-  if (typeof HTMLElement === 'object') {
-    return object instanceof HTMLElement
-  } else {
-    return object &&
-    typeof object === 'object' &&
-    object.nodeType === 1 &&
-    typeof object.nodeName === 'string'
-  }
-}
-
-expect.stringify = i
-
 function isArray (ar) {
   return Object.prototype.toString.call(ar) === '[object Array]'
 }
@@ -591,10 +560,6 @@ function isRegExp (re) {
   s.match(/^\/.*\/[gim]{0,3}$/)
 }
 
-function isDate (d) {
-  return d instanceof Date
-}
-
 function keys (obj) {
   if (Object.keys) {
     return Object.keys(obj)
@@ -611,105 +576,93 @@ function keys (obj) {
   return keys
 }
 
-  /**
-   * Asserts deep equality
-   *
-   * @see taken from node.js `assert` module (copyright Joyent, MIT license)
-   * @api private
-   */
+/**
+ * Asserts deep equality
+ *
+ * @see taken from node.js `assert` module (copyright Joyent, MIT license)
+ * @api private
+ */
 
-  expect.eql = function eql (actual, expected) {
-    // 7.1. All identical values are equivalent, as determined by ===.
-    if (actual === expected) {
-      return true
-    } else if ('undefined' != typeof Buffer
-      && Buffer.isBuffer(actual) && Buffer.isBuffer(expected)) {
-      if (actual.length != expected.length) return false
+function eql (a, b) {
+  if (a === b) { return true }
 
-      for (var i = 0; i < actual.length; i++) {
-        if (actual[i] !== expected[i]) return false
-      }
+  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(a) && Buffer.isBuffer(b)) {
+    if (a.length !== b.length) { return false }
 
-      return true
-
-    // 7.2. If the expected value is a Date object, the actual value is
-    // equivalent if it is also a Date object that refers to the same time.
-    } else if (actual instanceof Date && expected instanceof Date) {
-      return actual.getTime() === expected.getTime()
-
-    // 7.3. Other pairs that do not both pass typeof value == "object",
-    // equivalence is determined by ==.
-    } else if (typeof actual != 'object' && typeof expected != 'object') {
-      return actual == expected
-    // If both are regular expression use the special `regExpEquiv` method
-    // to determine equivalence.
-    } else if (isRegExp(actual) && isRegExp(expected)) {
-      return regExpEquiv(actual, expected)
-    // 7.4. For all other Object pairs, including Array objects, equivalence is
-    // determined by having the same number of owned properties (as verified
-    // with Object.prototype.hasOwnProperty.call), the same set of keys
-    // (although not necessarily the same order), equivalent values for every
-    // corresponding key, and an identical "prototype" property. Note: this
-    // accounts for both named and indexed properties on Arrays.
-    } else {
-      return objEquiv(actual, expected)
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) { return false }
     }
-  }
 
-  function isUndefinedOrNull (value) {
-    return value === null || value === undefined
-  }
-
-  function isArguments (object) {
-    return Object.prototype.toString.call(object) == '[object Arguments]'
-  }
-
-  function regExpEquiv (a, b) {
-    return a.source === b.source && a.global === b.global &&
-    a.ignoreCase === b.ignoreCase && a.multiline === b.multiline
-  }
-
-  function objEquiv (a, b) {
-    if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
-      return false
-    }
-    // an identical "prototype" property.
-    if (a.prototype !== b.prototype) { return false }
-    // ~~~I've managed to break Object.keys through screwy arguments passing.
-    //   Converting to array solves the problem.
-    if (isArguments(a)) {
-      if (!isArguments(b)) {
-        return false
-      }
-      a = pSlice.call(a)
-      b = pSlice.call(b)
-      return expect.eql(a, b)
-    }
-    try {
-      var ka = keys(a)
-      var kb = keys(b)
-      var key, i
-    } catch (e) { // happens when one is a string literal and the other isn't
-      return false
-    }
-    // having the same number of owned properties (keys incorporates hasOwnProperty)
-    if (ka.length !== kb.length) {
-      return false
-    }
-    // the same set of keys (although not necessarily the same order),
-    ka.sort()
-    kb.sort()
-    // ~~~cheap key test
-    for (i = ka.length - 1; i >= 0; i--) {
-      if (ka[i] != kb[i])
-        return false
-    }
-    // equivalent values for every corresponding key, and
-    // ~~~possibly expensive deep test
-    for (i = ka.length - 1; i >= 0; i--) {
-      key = ka[i]
-      if (!expect.eql(a[key], b[key]))
-        return false
-    }
     return true
   }
+
+  if (a instanceof Date && b instanceof Date) {
+    return a.getTime() === b.getTime()
+  }
+
+  if (typeof a !== 'object' && typeof b !== 'object') {
+    return a == b  // eslint-disable-line eqeqeq
+  }
+
+  if (isRegExp(a) && isRegExp(b)) {
+    return a.source === b.source &&
+      a.global === b.global &&
+      a.ignoreCase === b.ignoreCase &&
+      a.multiline === b.multiline
+  }
+
+  return objEquiv(a, b)
+}
+
+function isUndefinedOrNull (value) {
+  return value == null
+}
+
+function isArguments (object) {
+  return Object.prototype.toString.call(object) === '[object Arguments]'
+}
+
+function objEquiv (a, b) {
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
+    return false
+  }
+  // an identical "prototype" property.
+  if (a.prototype !== b.prototype) { return false }
+  // ~~~I've managed to break Object.keys through screwy arguments passing.
+  //   Converting to array solves the problem.
+  if (isArguments(a)) {
+    if (!isArguments(b)) {
+      return false
+    }
+    a = pSlice.call(a)
+    b = pSlice.call(b)
+    return expect.eql(a, b)
+  }
+  try {
+    var ka = keys(a)
+    var kb = keys(b)
+    var key, i
+  } catch (e) { // happens when one is a string literal and the other isn't
+    return false
+  }
+  // having the same number of owned properties (keys incorporates hasOwnProperty)
+  if (ka.length !== kb.length) {
+    return false
+  }
+  // the same set of keys (although not necessarily the same order),
+  ka.sort()
+  kb.sort()
+  // ~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i])
+      return false
+  }
+  // equivalent values for every corresponding key, and
+  // ~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i]
+    if (!eql(a[key], b[key]))
+      return false
+  }
+  return true
+}
