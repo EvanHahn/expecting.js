@@ -189,8 +189,8 @@ Assertion.prototype['throw'] = Assertion.prototype.throwError = Assertion.protot
 Assertion.prototype.empty = function () {
   var expectation
 
-    if ('object' == typeof this.obj && null !== this.obj && !isArray(this.obj)) {
-      if ('number' == typeof this.obj.length) {
+  if (typeof this.obj === 'object' && this.obj !== null && !isArray(this.obj)) {
+    if ('number' == typeof this.obj.length) {
       expectation = !this.obj.length
     } else {
       expectation = !keys(this.obj).length
