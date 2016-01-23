@@ -2,6 +2,10 @@ var i = require('util').inspect
 var isArray = require('lodash/isarray')
 var isRegExp = require('lodash/isregexp')
 var isEqual = require('lodash/isequal')
+var isString = require('lodash/isstring')
+var isFunction = require('lodash/isfunction')
+var isNumber = require('lodash/isnumber')
+var isObject = require('lodash/isobject')
 
 /**
  * Exports.
@@ -65,7 +69,7 @@ function Assertion (obj, flag, parent) {
       var name = $flags[i]
       var assertion = new Assertion(this.obj, name, this)
 
-      if (typeof Assertion.prototype[name] === 'function') {
+      if (isFunction(Assertion.prototype[name])) {
         // clone the function, make sure we dont touch the prot reference
         var old = this[name]
         this[name] = function () {
@@ -157,13 +161,13 @@ Assertion.prototype['throw'] = Assertion.prototype.throwError = Assertion.protot
     this.obj()
   } catch (e) {
     if (isRegExp(fn)) {
-      var subject = typeof e === 'string' ? e : e.message
+      var subject = isString(e) ? e : e.message
       if (not) {
         expect(subject).to.not.match(fn)
       } else {
         expect(subject).to.match(fn)
       }
-    } else if (typeof fn === 'function') {
+    } else if (isFunction(fn)) {
       fn(e)
     }
     thrown = true
@@ -192,14 +196,14 @@ Assertion.prototype['throw'] = Assertion.prototype.throwError = Assertion.protot
 Assertion.prototype.empty = function () {
   var expectation
 
-  if (typeof this.obj === 'object' && this.obj !== null && !isArray(this.obj)) {
-    if (typeof this.obj.length === 'number') {
+  if (isObject(this.obj) && !isArray(this.obj)) {
+    if (isNumber(this.obj.length)) {
       expectation = !this.obj.length
     } else {
       expectation = !keys(this.obj).length
     }
   } else {
-    if (typeof this.obj !== 'string') {
+    if (!isString(this.obj)) {
       expect(this.obj).to.be.an('object')
     }
 
@@ -271,7 +275,7 @@ Assertion.prototype.within = function (start, finish) {
  */
 
 Assertion.prototype.a = Assertion.prototype.an = function (type) {
-  if (typeof type === 'string') {
+  if (isString(type)) {
     var specialTypeofs = {
       array: isArray(this.obj),
       regexp: isRegExp(this.obj),
@@ -383,7 +387,7 @@ Assertion.prototype.property = function (name, val) {
   }
 
   if (this.flags.not && val !== undefined) {
-    if (undefined === this.obj[name]) {
+    if (this.obj[name] === undefined) {
       throw new Error(i(this.obj) + ' has no property ' + i(name))
     }
   } else {
@@ -428,7 +432,7 @@ Assertion.prototype.property = function (name, val) {
  */
 
 Assertion.prototype.string = Assertion.prototype.contain = function (obj) {
-  if (typeof this.obj === 'string') {
+  if (isString(this.obj)) {
     this.assert(
       ~this.obj.indexOf(obj),
       function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
