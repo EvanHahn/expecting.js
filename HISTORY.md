@@ -9,6 +9,7 @@ unreleased
  * remove: `expect.version`
  * remove: `expect.Assertion`
  * remove: `expect.eql`
+ * remove: `expect.stringify`
 
 This is the first version after the fork. Changes for the previous version are listed below.
 
