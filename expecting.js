@@ -1,4 +1,5 @@
 var i = require('util').inspect
+var isArray = require('lodash/isarray')
 
 /**
  * Exports.
@@ -536,10 +537,6 @@ function every (arr, fn, thisObj) {
     }
   }
   return true
-}
-
-function isArray (ar) {
-  return Object.prototype.toString.call(ar) === '[object Array]'
 }
 
 function isRegExp (re) {
