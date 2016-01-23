@@ -260,14 +260,20 @@ Assertion.prototype.within = function (start, finish) {
 
 Assertion.prototype.a = Assertion.prototype.an = function (type) {
   if (isString(type)) {
-    var expectedType = '[object ' + type + ']'
-    var actualType = Object.prototype.toString.call(this.obj).toLowerCase()
-
     var n = /^[aeiou]/.test(type) ? 'n' : ''
     var okMessage = function () { return 'expected ' + i(this.obj) + ' to be a' + n + ' ' + type }
     var notMessage = function () { return 'expected ' + i(this.obj) + ' not to be a' + n + ' ' + type }
 
-    this.assert(expectedType === actualType, okMessage, notMessage)
+    var condition
+    if (type === 'object') {
+      condition = typeof this.obj === 'object' && this.obj !== null
+    } else {
+      var expectedType = '[object ' + type + ']'
+      var actualType = Object.prototype.toString.call(this.obj).toLowerCase()
+      condition = expectedType === actualType
+    }
+
+    this.assert(condition, okMessage, notMessage)
   } else {
     // instanceof
     var name = type.name || 'supplied constructor'

@@ -254,8 +254,10 @@ describe('expect', function () {
 
     it('tests objects', function () {
       expect({}).to.be.an('object')
+      expect([]).to.be.an('object')
+      expect(new Date()).to.be.an('object')
+      expect(new Error()).to.be.an('object')
 
-      expect([]).not.to.be.an('object')
       expect(0).not.to.be.an('object')
       expect(null).not.to.be.an('object')
       expect(void 0).not.to.be.an('object')
@@ -276,39 +278,69 @@ describe('expect', function () {
       }, /expected 123 to be a string/)
     })
 
-    it('tests number', function () {
+    it('tests numbers', function () {
       expect(0).to.be.a('number')
       expect(123).to.be.a('number')
       expect(0.123).to.be.a('number')
       expect(-123).to.be.an('number')
       expect(new Number(123)).to.be.a('number')
+      expect(1 / 0).to.be.a('number')
+      expect(-1 / 0).to.be.a('number')
+      expect(0 / 0).to.be.a('number')
+
+      expect('0').not.to.be.a('number')
+      expect('1').not.to.be.a('number')
 
       assert.throws(function () {
-        expect(123).not.to.be.a('number')
-      }, /expected 123 not to be a number/)
+        expect(true).to.be.a('number')
+      }, /expected true to be a number/)
     })
 
-    // TODO: more!
+    it('tests booleans', function () {
+      expect(true).to.be.a('boolean')
+      expect(false).to.be.a('boolean')
+      expect(new Boolean(true)).to.be.a('boolean')
+      expect(new Boolean(false)).to.be.a('boolean')
+
+      expect(0).not.to.be.a('boolean')
+      expect('true').not.to.be.a('boolean')
+
+      assert.throws(function () {
+        expect(123).to.be.a('boolean')
+      }, /expected 123 to be a boolean/)
+    })
+
+    it('tests Dates', function () {
+      expect(new Date()).to.be.a(Date)
+      expect(new Date()).to.be.an(Date)
+
+      expect(123).not.to.be.a(Date)
+
+      assert.throws(function () {
+        expect(123).to.be.a(Date)
+      }, /expected 123 to be an instance of Date/)
+    })
+
+    it('tests instanceof a new class', function () {
+      function Foo () {}
+      expect(new Foo()).to.be.a(Foo)
+      expect(new Foo()).to.be.an(Foo)
+
+      if (isNameSupported) {
+        assert.throws(function () {
+          expect(3).to.be.a(Foo)
+        }, /expected 3 to be an instance of Foo/)
+      } else {
+        assert.throws(function () {
+          expect(3).to.be.a(Foo)
+        }, /expected 3 to be an instance of supplied constructor/)
+      }
+    })
   })
 
   it('should test .equal()', function () {
     var foo
     expect(foo).to.be(undefined)
-  })
-
-  it('should test instanceof', function () {
-    function Foo () {}
-    expect(new Foo()).to.be.a(Foo)
-
-    if (isNameSupported) {
-      assert.throws(function () {
-        expect(3).to.be.a(Foo)
-      }, /expected 3 to be an instance of Foo/)
-    } else {
-      assert.throws(function () {
-        expect(3).to.be.a(Foo)
-      }, /expected 3 to be an instance of supplied constructor/)
-    }
   })
 
   it('should test within(start, finish)', function () {
