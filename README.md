@@ -1,281 +1,206 @@
-# Expecting
+Expecting.js
+============
 
-TODO
+A minimalistic BDD assertion library. An actively maintained [expect.js](https://github.com/Automattic/expect.js).
 
-Minimalistic BDD assertion toolkit based on
-[should.js](http://github.com/visionmedia/should.js)
-
-```js
-expect(window.r).to.be(undefined);
-expect({ a: 'b' }).to.eql({ a: 'b' })
-expect(5).to.be.a('number');
-expect([]).to.be.an('array');
-expect(window).not.to.be.an(Image);
-```
-
-## Features
-
-- Cross-browser: works on IE6+, Firefox, Safari, Chrome, Opera.
-- Compatible with all test frameworks.
-- Node.JS ready (`require('expect.js')`).
-- Standalone. Single global with no prototype extensions or shims.
-
-## How to use
-
-### Node
-
-Install it with NPM or add it to your `package.json`:
-
-```
-$ npm install expect.js
-```
-
-Then:
+In Node, `npm install expecting`, and then use it:
 
 ```js
-var expect = require('expect.js');
+var expect = require('expecting')
+
+expect('foo').to.equal('foo')
+expect(5).to.be.a('number')
 ```
 
-### Browser
-
-Expose the `index.js` found at the top level of this repository.
+In the browser, grab `dist/expecting.js`, and then use it:
 
 ```html
-<script src="expect.js"></script>
+<script src="expecting.js"></script>
+<script>
+expect({ a: 'b' }).to.eql({ a: 'b' })
+expect([]).to.be.an('array')
+</script>
+```
+
+## How to use with [Mocha](https://mochajs.org/)
+
+Here's how to use this library with the Mocha testing library:
+
+```js
+var expect = require('expecting')
+
+describe('test suite', function () {
+  it('does not break the laws of mathematics', function () {
+    expect(1).to.equal(1)
+  })
+})
 ```
 
 ## API
 
-**ok**: asserts that the value is _truthy_ or not
+**ok**: assert whether a value is [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy).
 
 ```js
-expect(1).to.be.ok();
-expect(true).to.be.ok();
-expect({}).to.be.ok();
-expect(0).to.not.be.ok();
+expect(true).to.be.ok()
+expect(1).to.be.ok()
+expect({}).to.be.ok()
+
+expect(false).to.not.be.ok()
+expect(0).to.not.be.ok()
 ```
 
-**be** / **equal**: asserts `===` equality
+**be** (alias: **equal**): assert strict equality with `===`. Also works for `NaN`.
 
 ```js
 expect(1).to.be(1)
 expect('hi').to.be('hi')
 expect(NaN).to.be(NaN)
 
+expect('foo').not.to.be('bar')
+expect({ hi: 5 }).not.to.be({ hi: 5 })
 expect(1).not.to.be(true)
 expect('1').to.not.be(1)
 ```
 
-**eql**: asserts loose equality that works with objects
+**eql**: assert loose equality that works with objects. Does a deep comparison if `==` fails.
 
 ```js
-expect({ a: 'b' }).to.eql({ a: 'b' });
-expect(1).to.eql('1');
+expect(1).to.eql('1')
+expect(undefined).to.eql(null)
+expect({ a: 'b' }).to.eql({ a: 'b' })
+
+expect(1).not.to.eql(2)
 ```
 
-**a**/**an**: asserts `typeof` with support for `array` type and `instanceof`
+**a** (alias: **an**): assert that a property is of the correct type. Use string for primitives and constructors for more complex objects.
 
 ```js
-// typeof with optional `array`
-expect(5).to.be.a('number');
-expect([]).to.be.an('array');  // works
-expect([]).to.be.an('object'); // works too, since it uses `typeof`
+expect(5).to.be.a('number')
+expect([]).to.be.an('array')
+expect([]).to.be.an('object')
+expect({}).to.be.an('object')
 
-// constructors
-expect([]).to.be.an(Array);
-expect(tobi).to.be.a(Ferret);
-expect(person).to.be.a(Mammal);
+expect([]).to.be.an(Array)
+expect(new Date()).to.be.a(Date)
+expect(new Error()).to.be.an(Error)
 ```
 
-**match**: asserts `String` regular expression match
+**match**: assert that a string matches a regular expression.
 
 ```js
-expect(program.version).to.match(/[0-9]+\.[0-9]+\.[0-9]+/);
+expect('1.2.3').to.match(/[0-9]+\.[0-9]+\.[0-9]+/)
 ```
 
-**contain**: asserts indexOf for an array or string
+**contain**: assert that an array or string contains a value. Uses `indexOf` under the hood.
 
 ```js
-expect([1, 2]).to.contain(1);
-expect('hello world').to.contain('world');
+expect([1, 2]).to.contain(1)
+expect('hello world').to.contain('world')
+
+expect('hello world').not.to.contain('goodbye')
 ```
 
-**length**: asserts array `.length`
+**length**: assert that an array (or array-like) has the right length.
 
 ```js
-expect([]).to.have.length(0);
-expect([1,2,3]).to.have.length(3);
+expect([]).to.have.length(0)
+expect([1, 2, 3]).to.have.length(3)
+expect({ length: 5 }).to.have.length(5)
 ```
 
-**empty**: asserts that an array is empty or not
+**empty**: if given an object, assert that it has no keys. If given an array or string, assert that it is empty. Throws an error if given other types.
 
 ```js
-expect([]).to.be.empty();
-expect({}).to.be.empty();
-expect({ length: 0, duck: 'typing' }).to.be.empty();
-expect({ my: 'object' }).to.not.be.empty();
-expect([1,2,3]).to.not.be.empty();
+expect('').to.be.empty()
+expect([]).to.be.empty()
+expect({}).to.be.empty()
+
+expect({ my: 'object' }).to.not.be.empty()
+
+expect(null).to.be.empty()  // throws an error
 ```
 
-**property**: asserts presence of an own property (and value optionally)
+**property**: assert that a property is present, and optionally of a given value. Can also assert that the property is not inherited.
 
 ```js
-expect(window).to.have.property('expect')
-expect(window).to.have.property('expect', expect)
-expect({a: 'b'}).to.have.property('a');
+expect({ foo: 'boo' }).to.have.property('foo')
+expect({ foo: 'boo' }).to.have.property('foo', 'boo')
+
+function Klass() {
+  this.ownProperty = 123
+}
+Klass.prototype.parentProperty = 456
+var k = new Klass()
+
+expect(k).to.have.property('ownProperty')
+expect(k).to.have.own.property('ownProperty')
+expect(k).to.have.property('parentProperty')
+expect(k).not.to.have.own.property('parentProperty')
 ```
 
-**key**/**keys**: asserts the presence of a key. Supports the `only` modifier
+**key** (alias: **keys**): assert the presence of a key or keys. Supports the `only` modifier.
 
 ```js
-expect({ a: 'b' }).to.have.key('a');
-expect({ a: 'b', c: 'd' }).to.only.have.keys('a', 'c');
-expect({ a: 'b', c: 'd' }).to.only.have.keys(['a', 'c']);
-expect({ a: 'b', c: 'd' }).to.not.only.have.key('a');
+expect({ a: 'b' }).to.have.key('a')
+expect({ a: 'b', c: 'd' }).to.only.have.keys('a', 'c')
+expect({ a: 'b', c: 'd' }).to.only.have.keys(['a', 'c'])
+expect({ a: 'b', c: 'd' }).to.not.only.have.key('a')
 ```
 
-**throw**/**throwException**/**throwError**: asserts that the `Function` throws or not when called
+**throw** (aliases: **throwException**, **throwError**): assert that a function throws an error when called. Can optionally take a regular expression or a function to make more assertions about the exception.
 
 ```js
-expect(fn).to.throw(); // synonym of throwException
-expect(fn).to.throwError(); // synonym of throwException
-expect(fn).to.throwException(function (e) { // get the exception object
-  expect(e).to.be.a(SyntaxError);
-});
-expect(fn).to.throwException(/matches the exception message/);
-expect(fn2).to.not.throwException();
+function fn (message) {
+  throw new Error(message || 'Oh no!')
+}
+
+expect(fn).to.throw()
+expect(fn).to.throw(/Oh no/)
+
+expect(fn).withArgs('Something bad happened.').to.throw(/Something bad/)
+
+expect(fn).to.throw(function (err) {
+  expect(err).to.be.an(Error)
+})
+
+expect(function () {}).not.to.throw()
 ```
 
-**withArgs**: creates anonymous function to call fn with arguments
+**between** (alias: **within**): assert that a number is within a certain range.
 
 ```js
-expect(fn).withArgs(invalid, arg).to.throwException();
-expect(fn).withArgs(valid, arg).to.not.throwException();
+expect(1).to.be.between(0, 10)
 ```
 
-**within**: asserts a number within a range
+**greaterThan** (alias: **above**): assert that a value is greater than another (uses `>`).
 
 ```js
-expect(1).to.be.within(0, Infinity);
+expect(5).to.be.greaterThan(3)
 ```
 
-**greaterThan**/**above**: asserts `>`
+**lessThan** (alias: **below**): assert that a value is less than another (uses `<`).
 
 ```js
-expect(3).to.be.above(0);
-expect(5).to.be.greaterThan(3);
+expect(0).to.be.lessThan(3)
 ```
 
-**lessThan**/**below**: asserts `<`
+**greaterThanOrEqualTo** (alias: **atLeast**): assert that a value is greater than or equal to another (uses `>=`).
 
 ```js
-expect(0).to.be.below(3);
-expect(1).to.be.lessThan(3);
+expect(3).to.be.greaterThanOrEqualTo(0)
+expect(5).to.be.greaterThanOrEqualTo(5)
 ```
 
-**greaterThanOrEqualTo**/**atLeast**: asserts `>=`
-
-```js
-expect(3).to.be.atLeast(0)
-expect(5).to.be.atLeast(5)
-```
-
-**lessThanOrEqualTo**: asserts `<=`
+**lessThanOrEqualTo**: assert that a value is less than or equal to another (uses `<=`).
 
 ```js
 expect(0).to.be.lessThanOrEqualTo(3)
 expect(3).to.be.lessThanOrEqualTo(3)
 ```
 
-**fail**: explicitly forces failure.
+**fail**: explicitly force failure.
 
 ```js
-expect().fail()
-expect().fail("Custom failure message")
+expect().fail()                          // throws an error
+expect().fail('Custom failure message')  // throws an error
 ```
-
-## Using with a test framework
-
-For example, if you create a test suite with
-[mocha](http://github.com/visionmedia/mocha).
-
-Let's say we wanted to test the following program:
-
-**math.js**
-
-```js
-function add (a, b) { return a + b; };
-```
-
-Our test file would look like this:
-
-```js
-describe('test suite', function () {
-  it('should expose a function', function () {
-    expect(add).to.be.a('function');
-  });
-
-  it('should do math', function () {
-    expect(add(1, 3)).to.equal(4);
-  });
-});
-```
-
-If a certain expectation fails, an exception will be raised which gets captured
-and shown/processed by the test runner.
-
-## Differences with should.js
-
-- No need for static `should` methods like `should.strictEqual`. For example,
-  `expect(obj).to.be(undefined)` works well.
-- Some API simplifications / changes.
-- API changes related to browser compatibility.
-
-## Running tests
-
-Clone the repository and install the developer dependencies:
-
-```
-git clone git://github.com/LearnBoost/expect.js.git expect
-cd expect && npm install
-```
-
-### Node
-
-`make test`
-
-### Browser
-
-`make test-browser`
-
-and point your browser(s) to `http://localhost:3000/test/`
-
-## Credits
-
-(The MIT License)
-
-Copyright (c) 2011 Guillermo Rauch &lt;guillermo@learnboost.com&gt;
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-### 3rd-party
-
-Heavily borrows from [should.js](http://github.com/visionmedia/should.js) by TJ
-Holowaychuck - MIT.
