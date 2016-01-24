@@ -638,6 +638,22 @@ describe('expect', function () {
         expect({}).not.to.eql({})
       }, /expected {} not to loosely equal {}/)
     })
+
+    if (typeof Set !== 'undefined') {
+      it('works for Sets', function () {
+        var a = new Set()
+
+        expect(a).to.eql(a)
+        expect(new Set()).to.eql(new Set())
+        expect(new Set([1, 2, 3])).to.eql(new Set([1, 2, 3]))
+
+        expect(new Set()).not.to.eql(new Set([1, 2, 3]))
+
+        assert.throws(function () {
+          expect(new Set([1])).to.eql(new Set())
+        }, /expected Set { 1 } to loosely equal Set {}/)
+      })
+    }
   })
 
   describe('.to.be.empty', function () {
