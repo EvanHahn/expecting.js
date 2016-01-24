@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Assertion library for Node and browsers",
   "main": "expecting.js",
+  "license": "MIT",
   "scripts": {
     "test": "standard && mocha"
   },
