@@ -1,15 +1,27 @@
 {
   "name": "expecting",
+  "author": "Evan Hahn <me@evanhahn.com> (http://evanhahn.com)",
   "version": "0.0.0",
   "description": "Assertion library for Node and browsers",
+  "homepage": "https://github.com/EvanHahn/expecting.js",
   "main": "expecting.js",
   "license": "MIT",
+  "keywords": [
+    "expect",
+    "assertion",
+    "testing",
+    "assert"
+  ],
   "scripts": {
     "test": "standard && mocha"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/EvanHahn/expecting.js.git"
+  },
+  "bugs": "https://github.com/EvanHahn/expecting.js/issues",
+  "dependencies": {
+    "lodash": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^2.3.4",
@@ -23,8 +35,5 @@
       "describe",
       "it"
     ]
-  },
-  "dependencies": {
-    "lodash": "^4.0.0"
   }
 }
