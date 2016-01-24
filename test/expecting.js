@@ -161,122 +161,124 @@ describe('expect', function () {
     })
   })
 
-  it('should test functions with arguments', function () {
-    function itThrowsSometimes (first, second) {
-      if (first !== second) {
-        throw new Error('tell')
+  describe('.to.throw', function () {
+    it('should test functions with arguments', function () {
+      function itThrowsSometimes (first, second) {
+        if (first !== second) {
+          throw new Error('tell')
+        }
       }
-    }
 
-    expect(itThrowsSometimes).withArgs(false, false).to.not.throwException()
-    expect(itThrowsSometimes).withArgs(false, true).to.throwException(/tell/)
-    expect(itThrowsSometimes).withArgs(true, false).to.throwException(/tell/)
-    expect(itThrowsSometimes).withArgs(true, true).to.not.throwException()
-  })
-
-  it('should test for exceptions', function () {
-    function itThrows () {
-      a.b.c  // eslint-disable-line no-undef
-    }
-
-    function itThrowsString () {
-      throw 'aaa'  // eslint-disable-line no-throw-literal
-    }
-
-    function itThrowsMessage () {
-      throw new Error('tobi')
-    }
-
-    var anonItThrows = function () {
-      a.b.c  // eslint-disable-line no-undef
-    }
-
-    function itWorks () {
-      return
-    }
-
-    var anonItWorks = function () {}
-
-    expect(itThrows).to.throwException()
-    expect(itWorks).to.not.throwException()
-
-    var subject
-
-    expect(itThrows).to.throwException(function (e) {
-      subject = e
+      expect(itThrowsSometimes).withArgs(false, false).to.not.throwException()
+      expect(itThrowsSometimes).withArgs(false, true).to.throwException(/tell/)
+      expect(itThrowsSometimes).withArgs(true, false).to.throwException(/tell/)
+      expect(itThrowsSometimes).withArgs(true, true).to.not.throwException()
     })
 
-    expect(subject).to.be.an(Error)
+    it('should test for exceptions', function () {
+      function itThrows () {
+        a.b.c  // eslint-disable-line no-undef
+      }
 
-    expect(itThrowsMessage).to.throwException(/tobi/)
-    expect(itThrowsMessage).to.not.throwException(/test/)
+      function itThrowsString () {
+        throw 'aaa'  // eslint-disable-line no-throw-literal
+      }
 
-    assert.throws(function () {
-      expect(itThrowsMessage).to.throwException(/no match/)
-    }, /expected 'tobi' to match \/no match\//)
+      function itThrowsMessage () {
+        throw new Error('tobi')
+      }
 
-    var subject2
+      var anonItThrows = function () {
+        a.b.c  // eslint-disable-line no-undef
+      }
 
-    expect(itThrowsString).to.throwException(function (str) {
-      subject2 = str
-    })
+      function itWorks () {
+        return
+      }
 
-    expect(subject2).to.be('aaa')
+      var anonItWorks = function () {}
 
-    expect(itThrowsString).to.throwException(/aaa/)
-    expect(itThrowsString).to.not.throwException(/bbb/)
+      expect(itThrows).to.throwException()
+      expect(itWorks).to.not.throwException()
 
-    assert.throws(function () {
-      expect(itThrowsString).to.throwException(/no match/i)
-    }, /expected 'aaa' to match \/no match\/i/)
+      var subject
 
-    var called = false
+      expect(itThrows).to.throwException(function (e) {
+        subject = e
+      })
 
-    expect(itWorks).to.not.throwError(function () {
-      called = true
-    })
+      expect(subject).to.be.an(Error)
 
-    expect(called).to.be(false)
+      expect(itThrowsMessage).to.throwException(/tobi/)
+      expect(itThrowsMessage).to.not.throwException(/test/)
 
-    var called2 = false
-
-    expect(itWorks).to.not.throw(function () {
-      called2 = true
-    })
-
-    expect(called2).to.be(false)
-
-    assert.throws(function () {
-      expect(5).to.throwException()
-    }, /expected 5 to be a function/)
-
-    assert.throws(function () {
-      expect(anonItThrows).not.to.throwException()
-    }, /expected fn not to throw an exception/)
-
-    assert.throws(function () {
-      expect(anonItWorks).to.throwException()
-    }, /expected fn to throw an exception/)
-
-    if (isNameSupported) {
       assert.throws(function () {
-        expect(itWorks).to.throwException()
-      }, /expected itWorks to throw an exception/)
-    } else {
-      assert.throws(function () {
-        expect(itWorks).to.throwException()
-      }, /expected fn to throw an exception/)
-    }
+        expect(itThrowsMessage).to.throwException(/no match/)
+      }, /expected 'tobi' to match \/no match\//)
 
-    if (isNameSupported) {
+      var subject2
+
+      expect(itThrowsString).to.throwException(function (str) {
+        subject2 = str
+      })
+
+      expect(subject2).to.be('aaa')
+
+      expect(itThrowsString).to.throwException(/aaa/)
+      expect(itThrowsString).to.not.throwException(/bbb/)
+
       assert.throws(function () {
-        expect(itThrows).not.to.throwException()
-      }, /expected itThrows not to throw an exception/)
-    } else {
+        expect(itThrowsString).to.throwException(/no match/i)
+      }, /expected 'aaa' to match \/no match\/i/)
+
+      var called = false
+
+      expect(itWorks).to.not.throwError(function () {
+        called = true
+      })
+
+      expect(called).to.be(false)
+
+      var called2 = false
+
+      expect(itWorks).to.not.throw(function () {
+        called2 = true
+      })
+
+      expect(called2).to.be(false)
+
+      assert.throws(function () {
+        expect(5).to.throwException()
+      }, /expected 5 to be a function/)
+
       assert.throws(function () {
         expect(anonItThrows).not.to.throwException()
       }, /expected fn not to throw an exception/)
-    }
+
+      assert.throws(function () {
+        expect(anonItWorks).to.throwException()
+      }, /expected fn to throw an exception/)
+
+      if (isNameSupported) {
+        assert.throws(function () {
+          expect(itWorks).to.throwException()
+        }, /expected itWorks to throw an exception/)
+      } else {
+        assert.throws(function () {
+          expect(itWorks).to.throwException()
+        }, /expected fn to throw an exception/)
+      }
+
+      if (isNameSupported) {
+        assert.throws(function () {
+          expect(itThrows).not.to.throwException()
+        }, /expected itThrows not to throw an exception/)
+      } else {
+        assert.throws(function () {
+          expect(anonItThrows).not.to.throwException()
+        }, /expected fn not to throw an exception/)
+      }
+    })
   })
 
   describe('.to.be.a', function () {
@@ -835,99 +837,87 @@ describe('expect', function () {
     })
   })
 
-  it('should test keys(array)', function () {
-    expect({ foo: 1 }).to.have.keys(['foo'])
-    expect({ foo: 1, bar: 2 }).to.have.keys(['foo', 'bar'])
-    expect({ foo: 1, bar: 2 }).to.have.keys('foo', 'bar')
-    expect({ foo: 1, bar: 2, baz: 3 }).to.include.keys('foo', 'bar')
-    expect({ foo: 1, bar: 2, baz: 3 }).to.include.keys('bar', 'foo')
-    expect({ foo: 1, bar: 2, baz: 3 }).to.include.keys('baz')
+  describe('.to.have.keys', function () {
+    it('should test keys(array)', function () {
+      expect({ foo: 1 }).to.have.keys(['foo'])
+      expect({ foo: 1, bar: 2 }).to.have.keys(['foo', 'bar'])
+      expect({ foo: 1, bar: 2 }).to.have.keys('foo', 'bar')
+      expect({ foo: 1, bar: 2, baz: 3 }).to.include.keys('foo', 'bar')
+      expect({ foo: 1, bar: 2, baz: 3 }).to.include.keys('bar', 'foo')
+      expect({ foo: 1, bar: 2, baz: 3 }).to.include.keys('baz')
 
-    expect({ foo: 1, bar: 2 }).to.include.keys('foo')
-    expect({ foo: 1, bar: 2 }).to.include.keys('bar', 'foo')
-    expect({ foo: 1, bar: 2 }).to.include.keys(['foo'])
-    expect({ foo: 1, bar: 2 }).to.include.keys(['bar'])
-    expect({ foo: 1, bar: 2 }).to.include.keys(['bar', 'foo'])
+      expect({ foo: 1, bar: 2 }).to.include.keys('foo')
+      expect({ foo: 1, bar: 2 }).to.include.keys('bar', 'foo')
+      expect({ foo: 1, bar: 2 }).to.include.keys(['foo'])
+      expect({ foo: 1, bar: 2 }).to.include.keys(['bar'])
+      expect({ foo: 1, bar: 2 }).to.include.keys(['bar', 'foo'])
 
-    expect({ foo: 1, bar: 2 }).to.not.have.keys('baz')
-    expect({ foo: 1, bar: 2 }).to.not.have.keys('foo', 'baz')
-    expect({ foo: 1, bar: 2 }).to.not.include.keys('baz')
-    expect({ foo: 1, bar: 2 }).to.not.include.keys('foo', 'baz')
-    expect({ foo: 1, bar: 2 }).to.not.include.keys('baz', 'foo')
+      expect({ foo: 1, bar: 2 }).to.not.have.keys('baz')
+      expect({ foo: 1, bar: 2 }).to.not.have.keys('foo', 'baz')
+      expect({ foo: 1, bar: 2 }).to.not.include.keys('baz')
+      expect({ foo: 1, bar: 2 }).to.not.include.keys('foo', 'baz')
+      expect({ foo: 1, bar: 2 }).to.not.include.keys('baz', 'foo')
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.have.keys()
-    }, /keys required/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.have.keys()
+      }, /keys required/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.have.keys([])
-    }, /keys required/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.have.keys([])
+      }, /keys required/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.not.have.keys([])
-    }, /keys required/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.not.have.keys([])
+      }, /keys required/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.include.keys([])
-    }, /keys required/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.include.keys([])
+      }, /keys required/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.have.keys(['bar'])
-    }, /expected { foo: 1 } to include key 'bar'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.have.keys(['bar'])
+      }, /expected { foo: 1 } to include key 'bar'/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.have.keys(['bar', 'baz'])
-    }, /expected { foo: 1 } to include keys 'bar', and 'baz'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.have.keys(['bar', 'baz'])
+      }, /expected { foo: 1 } to include keys 'bar', and 'baz'/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.have.keys(['foo', 'bar', 'baz'])
-    }, /expected { foo: 1 } to include keys 'foo', 'bar', and 'baz'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.have.keys(['foo', 'bar', 'baz'])
+      }, /expected { foo: 1 } to include keys 'foo', 'bar', and 'baz'/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.not.have.keys(['foo'])
-    }, /expected { foo: 1 } to not include key 'foo'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.not.have.keys(['foo'])
+      }, /expected { foo: 1 } to not include key 'foo'/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.not.have.keys(['foo'])
-    }, /expected { foo: 1 } to not include key 'foo'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.not.have.keys(['foo'])
+      }, /expected { foo: 1 } to not include key 'foo'/)
 
-    assert.throws(function () {
-      expect({ foo: 1, bar: 2 }).to.not.have.keys(['foo', 'bar'])
-    }, /expected { foo: 1, bar: 2 } to not include keys 'foo', and 'bar'/)
+      assert.throws(function () {
+        expect({ foo: 1, bar: 2 }).to.not.have.keys(['foo', 'bar'])
+      }, /expected { foo: 1, bar: 2 } to not include keys 'foo', and 'bar'/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.not.include.keys(['foo'])
-    }, /expected { foo: 1 } to not include key 'foo'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.not.include.keys(['foo'])
+      }, /expected { foo: 1 } to not include key 'foo'/)
 
-    assert.throws(function () {
-      expect({ foo: 1 }).to.include.keys('foo', 'bar')
-    }, /expected { foo: 1 } to include keys 'foo', and 'bar'/)
+      assert.throws(function () {
+        expect({ foo: 1 }).to.include.keys('foo', 'bar')
+      }, /expected { foo: 1 } to include keys 'foo', and 'bar'/)
 
-    // only
-    expect({ foo: 1, bar: 1 }).to.only.have.keys('foo', 'bar')
-    expect({ foo: 1, bar: 1 }).to.only.have.keys(['foo', 'bar'])
+      // only
+      expect({ foo: 1, bar: 1 }).to.only.have.keys('foo', 'bar')
+      expect({ foo: 1, bar: 1 }).to.only.have.keys(['foo', 'bar'])
 
-    assert.throws(function () {
-      expect({ a: 'b', c: 'd' }).to.only.have.keys('a', 'b', 'c')
-    }, /expected { a: 'b', c: 'd' } to only have keys 'a', 'b', and 'c'/)
+      assert.throws(function () {
+        expect({ a: 'b', c: 'd' }).to.only.have.keys('a', 'b', 'c')
+      }, /expected { a: 'b', c: 'd' } to only have keys 'a', 'b', and 'c'/)
 
-    assert.throws(function () {
-      expect({ a: 'b', c: 'd' }).to.only.have.keys('a')
-    }, /expected { a: 'b', c: 'd' } to only have key 'a'/)
-  })
-
-  it('should allow chaining with `and`', function () {
-    expect(5).to.be.a('number').and.be(5)
-    expect(5).to.be.a('number').and.not.be(6)
-    expect(5).to.be.a('number').and.not.be(6).and.not.be('5')
-
-    assert.throws(function () {
-      expect(5).to.be.a('number').and.not.be(5)
-    }, /expected 5 to not equal 5/)
-
-    assert.throws(function () {
-      expect(5).to.be.a('number').and.not.be(6).and.not.be.above(4)
-    }, /expected 5 to be below 4/)
+      assert.throws(function () {
+        expect({ a: 'b', c: 'd' }).to.only.have.keys('a')
+      }, /expected { a: 'b', c: 'd' } to only have key 'a'/)
+    })
   })
 
   describe('.fail', function () {
@@ -941,6 +931,22 @@ describe('expect', function () {
       assert.throws(function () {
         expect().fail('explicit failure with message')
       }, /explicit failure with message/)
+    })
+  })
+
+  describe('chaining', function () {
+    it('allows chaining with `and`', function () {
+      expect(5).to.be.a('number').and.be(5)
+      expect(5).to.be.a('number').and.not.be(6)
+      expect(5).to.be.a('number').and.not.be(6).and.not.be('5')
+
+      assert.throws(function () {
+        expect(5).to.be.a('number').and.not.be(5)
+      }, /expected 5 to not equal 5/)
+
+      assert.throws(function () {
+        expect(5).to.be.a('number').and.not.be(6).and.not.be.above(4)
+      }, /expected 5 to be below 4/)
     })
   })
 })
