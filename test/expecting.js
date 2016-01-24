@@ -381,6 +381,18 @@ describe('expect', function () {
       }, /expected 123 to be an instance of Date/)
     })
 
+    if (typeof Buffer !== 'undefined') {
+      it('tests Buffers', function () {
+        expect(new Buffer([1, 2, 3])).to.be.a(Buffer)
+
+        expect([1, 2, 3]).not.to.be.a(Buffer)
+
+        assert.throws(function () {
+          expect(123).to.be.a(Buffer)
+        }, /expected 123 to be an instance of Buffer/)
+      })
+    }
+
     it('tests instanceof a new class', function () {
       function Foo () {}
       expect(new Foo()).to.be.a(Foo)
