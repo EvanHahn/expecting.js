@@ -13,6 +13,7 @@ var isRegExp = require('lodash/isregexp')
 var isString = require('lodash/isstring')
 var isnan = require('lodash/isnan')
 var keys = require('lodash/keys')
+var map = require('lodash/map')
 
 /**
  * Exports.
@@ -472,7 +473,7 @@ Assertion.prototype.key = Assertion.prototype.keys = function ($keys) {
 
   // Key string
   if (len > 1) {
-    $keys = $keys.map(function (key) {
+    $keys = map($keys, function (key) {
       return i(key)
     })
     var last = $keys.pop()
