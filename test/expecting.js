@@ -768,41 +768,71 @@ describe('expect', function () {
     })
   })
 
-  it('should test string()', function () {
-    expect('foobar').to.contain('bar')
-    expect('foobar').to.contain('foo')
-    expect('foobar').to.include.string('foo')
-    expect('foobar').to.not.contain('baz')
-    expect('foobar').to.not.include.string('baz')
+  describe('.to.contain', function () {
+    it('tests substrings', function () {
+      expect('foobar').to.contain('bar')
+      expect('foobar').to.contain('foo')
+      expect(new String('foobar')).to.contain('foo')
+      expect('foobar').to.contain(new String('foo'))
+      expect(new String('foobar')).to.contain(new String('foo'))
 
-    assert.throws(function () {
-      expect(3).to.contain('baz')
-    }, /expected 3 to contain 'baz'/)
+      expect('foobar').to.not.contain('baz')
 
-    assert.throws(function () {
-      expect('foobar').to.contain('baz')
-    }, /expected 'foobar' to contain 'baz'/)
+      assert.throws(function () {
+        expect(3).to.contain('baz')
+      }, /expected 3 to contain 'baz'/)
 
-    assert.throws(function () {
-      expect('foobar').to.not.contain('bar')
-    }, /expected 'foobar' to not contain 'bar'/)
+      assert.throws(function () {
+        expect('foobar').to.contain('baz')
+      }, /expected 'foobar' to contain 'baz'/)
+
+      assert.throws(function () {
+        expect('foobar').to.not.contain('bar')
+      }, /expected 'foobar' to not contain 'bar'/)
+    })
+
+    it('tests arrays', function () {
+      expect(['foo', 'bar']).to.contain('foo')
+      expect(['foo', 'bar']).to.contain('foo')
+      expect(['foo', 'bar']).to.contain('bar')
+      expect([1, 2]).to.contain(1)
+
+      expect([]).to.not.contain(1)
+      expect(['foo', 'bar']).to.not.contain('baz')
+      expect(['foo', 'bar']).to.not.contain(1)
+
+      assert.throws(function () {
+        expect(['foo']).to.contain('bar')
+      }, /expected \[ 'foo' \] to contain 'bar'/)
+
+      assert.throws(function () {
+        expect(['bar', 'foo']).to.not.contain('foo')
+      }, /expected \[ 'bar', 'foo' \] to not contain 'foo'/)
+    })
   })
 
-  it('should test contain()', function () {
-    expect(['foo', 'bar']).to.contain('foo')
-    expect(['foo', 'bar']).to.contain('foo')
-    expect(['foo', 'bar']).to.contain('bar')
-    expect([1, 2]).to.contain(1)
-    expect(['foo', 'bar']).to.not.contain('baz')
-    expect(['foo', 'bar']).to.not.contain(1)
+  describe('.to.include.string', function () {
+    it('tests substrings', function () {
+      expect('foobar').to.contain('bar')
+      expect('foobar').to.contain('foo')
+      expect(new String('foobar')).to.contain('foo')
+      expect('foobar').to.contain(new String('foo'))
+      expect(new String('foobar')).to.contain(new String('foo'))
 
-    assert.throws(function () {
-      expect(['foo']).to.contain('bar')
-    }, /expected \[ 'foo' \] to contain 'bar'/)
+      expect('foobar').to.not.contain('baz')
 
-    assert.throws(function () {
-      expect(['bar', 'foo']).to.not.contain('foo')
-    }, /expected \[ 'bar', 'foo' \] to not contain 'foo'/)
+      assert.throws(function () {
+        expect(3).to.contain('baz')
+      }, /expected 3 to contain 'baz'/)
+
+      assert.throws(function () {
+        expect('foobar').to.contain('baz')
+      }, /expected 'foobar' to contain 'baz'/)
+
+      assert.throws(function () {
+        expect('foobar').to.not.contain('bar')
+      }, /expected 'foobar' to not contain 'bar'/)
+    })
   })
 
   it('should test keys(array)', function () {
