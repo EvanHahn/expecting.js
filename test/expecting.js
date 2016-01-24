@@ -498,6 +498,48 @@ describe('expect', function () {
     })
   })
 
+  ;['atLeast', 'greaterThanOrEqualTo'].forEach(function (atLeast) {
+    describe('.to.be.' + atLeast, function () {
+      it('tests numbers', function () {
+        expect(5).to.be[atLeast](5)
+        expect(5).to.be[atLeast](2)
+        expect(new Number(5)).to.be[atLeast](2)
+        expect(5).to.be[atLeast](new Number(2))
+        expect(new Number(5)).to.be[atLeast](new Number(2))
+
+        expect(5).not.to.be[atLeast](10)
+
+        assert.throws(function () {
+          expect(5).to.be[atLeast](6)
+        }, /expected 5 to be greater than or equal to 6/)
+
+        assert.throws(function () {
+          expect(10).to.not.be[atLeast](6)
+        }, /expected 10 to be below 6/)
+      })
+    })
+  })
+
+  describe('.to.be.lessThanOrEqualTo', function () {
+    it('tests numbers', function () {
+      expect(5).to.be.lessThanOrEqualTo(5)
+      expect(5).to.be.lessThanOrEqualTo(10)
+      expect(new Number(5)).to.be.lessThanOrEqualTo(10)
+      expect(5).to.be.lessThanOrEqualTo(new Number(10))
+      expect(new Number(5)).to.be.lessThanOrEqualTo(new Number(10))
+
+      expect(5).not.to.be.lessThanOrEqualTo(3)
+
+      assert.throws(function () {
+        expect(5).to.be.lessThanOrEqualTo(3)
+      }, /expected 5 to be less than or equal to 3/)
+
+      assert.throws(function () {
+        expect(6).to.not.be.lessThanOrEqualTo(10)
+      }, /expected 6 to be above 10/)
+    })
+  })
+
   describe('.to.match', function () {
     it('tests regular expressions', function () {
       expect('foobar').to.match(/^foo/)

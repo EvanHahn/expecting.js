@@ -326,6 +326,54 @@ Assertion.prototype.lessThan = Assertion.prototype.below = function (n) {
 }
 
 /**
+ * Assert numeric value at least _n_.
+ *
+ * @param {Number} n
+ * @api public
+ */
+
+Assertion.prototype.greaterThanOrEqualTo = Assertion.prototype.atLeast = function (n) {
+  this.assert(
+    this.obj >= n,
+    function () { return 'expected ' + i(this.obj) + ' to be greater than or equal to ' + i(n) },
+    function () { return 'expected ' + i(this.obj) + ' to be below ' + i(n) }
+  )
+  return this
+}
+
+/**
+ * Assert numeric value less than or equal to _n_.
+ *
+ * @param {Number} n
+ * @api public
+ */
+
+Assertion.prototype.lessThanOrEqualTo = function (n) {
+  this.assert(
+    this.obj <= n,
+    function () { return 'expected ' + i(this.obj) + ' to be less than or equal to ' + i(n) },
+    function () { return 'expected ' + i(this.obj) + ' to be above ' + i(n) }
+  )
+  return this
+}
+
+/**
+ * Assert numeric value below _n_.
+ *
+ * @param {Number} n
+ * @api public
+ */
+
+Assertion.prototype.lessThan = Assertion.prototype.below = function (n) {
+  this.assert(
+    this.obj < n,
+    function () { return 'expected ' + i(this.obj) + ' to be below ' + i(n) },
+    function () { return 'expected ' + i(this.obj) + ' to be above ' + i(n) }
+  )
+  return this
+}
+
+/**
  * Assert string value matches _regexp_.
  *
  * @param {RegExp} regexp

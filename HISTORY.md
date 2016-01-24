@@ -1,6 +1,9 @@
 unreleased
 ==========
 
+* new: `greaterThanOrEqualTo`/`atLeast`
+* new: `lessThanOrEqualTo`
+
 * update: non-array objects with `length` properties are no longer considered empty
 * update: change error message when determining emptiness of values that are not strings, arrays, or objects
 * update: change error messages for `.to.have.property` and `.to.have.own.property`

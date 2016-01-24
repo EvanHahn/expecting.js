@@ -173,6 +173,20 @@ expect(0).to.be.below(3);
 expect(1).to.be.lessThan(3);
 ```
 
+**greaterThanOrEqualTo**/**atLeast**: asserts `>=`
+
+```js
+expect(3).to.be.atLeast(0)
+expect(5).to.be.atLeast(5)
+```
+
+**lessThanOrEqualTo**: asserts `<=`
+
+```js
+expect(0).to.be.lessThanOrEqualTo(3)
+expect(3).to.be.lessThanOrEqualTo(3)
+```
+
 **fail**: explicitly forces failure.
 
 ```js
