@@ -566,6 +566,8 @@ describe('expect', function () {
     })
 
     it('works for loosely equal values', function () {
+      expect(void 0).to.eql(null)
+      expect(null).to.eql(void 0)
       expect(0).to.eql(false)
       expect('').to.eql(false)
       expect('0').to.eql(0)
