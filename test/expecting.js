@@ -7,120 +7,120 @@ function dummyFunction () {}
 var isNameSupported = dummyFunction.name === 'dummyFunction'
 
 describe('expect', function () {
-  describe('.to.be', function () {
-    it('tests `true`', function () {
-      expect(true).to.be(true)
+  ['be', 'equal'].forEach(function (be) {
+    describe('.to.' + be, function () {
+      it('tests `true`', function () {
+        expect(true).to[be](true)
 
-      expect(false).not.to.be(true)
-      expect(1).not.to.be(true)
-      expect('true').not.to.be(true)
-      expect(new Boolean(true)).not.to.be(true)
+        expect(false).not.to[be](true)
+        expect(1).not.to[be](true)
+        expect('true').not.to[be](true)
+        expect(new Boolean(true)).not.to[be](true)
 
-      assert.throws(function () {
-        expect('test').to.be(true)
-      }, /expected 'test' to equal true/)
-    })
+        assert.throws(function () {
+          expect('test').to[be](true)
+        }, /expected 'test' to equal true/)
+      })
 
-    it('tests `false`', function () {
-      expect(false).to.be(false)
+      it('tests `false`', function () {
+        expect(false).to[be](false)
 
-      expect(true).not.to.be(false)
-      expect(1).not.to.be(false)
-      expect('false').not.to.be(false)
-      expect(new Boolean(false)).not.to.be(false)
+        expect(true).not.to[be](false)
+        expect(1).not.to[be](false)
+        expect('false').not.to[be](false)
+        expect(new Boolean(false)).not.to[be](false)
 
-      assert.throws(function () {
-        expect('test').to.be(false)
-      }, /expected 'test' to equal false/)
-    })
+        assert.throws(function () {
+          expect('test').to[be](false)
+        }, /expected 'test' to equal false/)
+      })
 
-    it('tests numbers', function () {
-      expect(0).to.be(0)
-      expect(1).to.be(1)
-      expect(+0).to.be(-0)
-      expect(+0).to.be(+0)
+      it('tests numbers', function () {
+        expect(0).to[be](0)
+        expect(1).to[be](1)
+        expect(+0).to[be](-0)
+        expect(+0).to[be](+0)
 
-      expect(1).not.to.be(2)
-      expect('1').not.to.be(2)
+        expect(1).not.to[be](2)
+        expect('1').not.to[be](2)
 
-      assert.throws(function () {
-        expect(1).to.be(2)
-      }, /expected 1 to equal 2/)
-    })
+        assert.throws(function () {
+          expect(1).to[be](2)
+        }, /expected 1 to equal 2/)
+      })
 
-    it('tests objects', function () {
-      var a = {}
-      var b = {}
+      it('tests objects', function () {
+        var a = {}
+        var b = {}
 
-      expect(a).to.be(a)
+        expect(a).to[be](a)
 
-      expect(a).not.to.be(b)
-      expect(b).not.to.be(a)
+        expect(a).not.to[be](b)
+        expect(b).not.to[be](a)
 
-      assert.throws(function () {
-        expect({}).to.be({ hi: 5 })
-      }, /expected {} to equal { hi: 5 }/)
-    })
+        assert.throws(function () {
+          expect({}).to[be]({ hi: 5 })
+        }, /expected {} to equal { hi: 5 }/)
+      })
 
-    it('tests arrays', function () {
-      var a = []
-      var b = []
+      it('tests arrays', function () {
+        var a = []
+        var b = []
 
-      expect(a).to.be(a)
+        expect(a).to[be](a)
 
-      expect(a).not.to.be(b)
-      expect(b).not.to.be(a)
+        expect(a).not.to[be](b)
+        expect(b).not.to[be](a)
 
-      assert.throws(function () {
-        expect([]).to.be([1, 2])
-      }, /expected \[\] to equal \[ 1, 2 \]/)
-    })
+        assert.throws(function () {
+          expect([]).to[be]([1, 2])
+        }, /expected \[\] to equal \[ 1, 2 \]/)
+      })
 
-    it('tests null', function () {
-      expect(null).to.be(null)
+      it('tests null', function () {
+        expect(null).to[be](null)
 
-      expect('').not.to.be(null)
-      expect('null').not.to.be(null)
-      expect(undefined).not.to.be(null)
-      expect(0).not.to.be(null)
-      expect([null]).not.to.be(null)
+        expect('').not.to[be](null)
+        expect('null').not.to[be](null)
+        expect(undefined).not.to[be](null)
+        expect(0).not.to[be](null)
+        expect([null]).not.to[be](null)
 
-      assert.throws(function () {
-        expect(123).to.be(null)
-      }, /expected 123 to equal null/)
-    })
+        assert.throws(function () {
+          expect(123).to[be](null)
+        }, /expected 123 to equal null/)
+      })
 
-    it('tests undefined', function () {
-      expect().to.be(void 0)
-      expect(void 0).to.be(void 0)
+      it('tests undefined', function () {
+        expect().to[be](void 0)
+        expect(void 0).to[be](void 0)
 
-      expect('').not.to.be(void 0)
-      expect('undefined').not.to.be(void 0)
-      expect('void 0').not.to.be(void 0)
-      expect(null).not.to.be(void 0)
-      expect(0).not.to.be(void 0)
-      expect([void 0]).not.to.be(void 0)
+        expect('').not.to[be](void 0)
+        expect('undefined').not.to[be](void 0)
+        expect('void 0').not.to[be](void 0)
+        expect(null).not.to[be](void 0)
+        expect(0).not.to[be](void 0)
+        expect([void 0]).not.to[be](void 0)
 
-      assert.throws(function () {
-        expect(123).to.be(void 0)
-      }, /expected 123 to equal undefined/)
-    })
+        assert.throws(function () {
+          expect(123).to[be](void 0)
+        }, /expected 123 to equal undefined/)
+      })
 
-    it('tests NaN', function () {
-      expect(0 / 0).to.be(0 / 0)
-      expect(NaN).to.be(0 / 0)
-      expect(0 / 0).to.be(NaN)
+      it('tests NaN', function () {
+        expect(0 / 0).to[be](0 / 0)
+        expect(NaN).to[be](0 / 0)
+        expect(0 / 0).to[be](NaN)
 
-      expect(0).not.to.be(NaN)
-      expect(0).not.to.be(0 / 0)
+        expect(0).not.to[be](NaN)
+        expect(0).not.to[be](0 / 0)
 
-      assert.throws(function () {
-        expect(123).to.be(0 / 0)
-      }, /expected 123 to equal NaN/)
+        assert.throws(function () {
+          expect(123).to[be](0 / 0)
+        }, /expected 123 to equal NaN/)
+      })
     })
   })
-
-  // TODO: to.equal
 
   describe('.to.be.ok', function () {
     it('works on truthy values', function () {
