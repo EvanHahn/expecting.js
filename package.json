@@ -1,7 +1,7 @@
 {
   "name": "expecting",
   "author": "Evan Hahn <me@evanhahn.com> (http://evanhahn.com)",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Assertion library for Node and browsers",
   "homepage": "https://github.com/EvanHahn/expecting.js",
   "main": "expecting.js",
