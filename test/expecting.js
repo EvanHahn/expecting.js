@@ -149,6 +149,7 @@ describe('expect', function () {
       expect(0 / 0).not.to.be.ok()
       expect(null).not.to.be.ok()
       expect(void 0).not.to.be.ok()
+      expect(NaN).not.to.be.ok()
 
       assert.throws(function () {
         expect(true).not.to.be.ok()
@@ -531,16 +532,96 @@ describe('expect', function () {
     })
   })
 
-  it('should test eql(val)', function () {
-    expect('test').to.eql('test')
-    expect({ foo: 'bar' }).to.eql({ foo: 'bar' })
-    expect(1).to.eql(1)
-    expect('4').to.eql(4)
-    expect(/a/gmi).to.eql(/a/mig)
+  describe('.to.be.eql', function () {
+    it('works for strictly equal values', function () {
+      expect('test').to.eql('test')
+      expect(123).to.eql(123)
 
-    assert.throws(function () {
-      expect(4).to.eql(3)
-    }, /expected 4 to sort of equal 3/)
+      expect(123).not.to.eql(456)
+
+      assert.throws(function () {
+        expect(12).to.eql(69)
+      }, /expected 12 to loosely equal 69/)
+
+      assert.throws(function () {
+        expect(69).not.to.eql(69)
+      }, /expected 69 not to loosely equal 69/)
+    })
+
+    it('works for NaN', function () {
+      expect(NaN).to.eql(NaN)
+
+      expect(NaN).not.to.eql(19)
+      expect(19).not.to.eql(NaN)
+
+      assert.throws(function () {
+        expect(NaN).to.eql(69)
+      }, /expected NaN to loosely equal 69/)
+
+      assert.throws(function () {
+        expect(NaN).not.to.eql(NaN)
+      }, /expected NaN not to loosely equal NaN/)
+    })
+
+    it('works for loosely equal values', function () {
+      expect(0).to.eql(false)
+      expect('').to.eql(false)
+      expect('0').to.eql(0)
+      expect(new Number(69)).to.eql(69)
+      expect(new Number(69)).to.eql(new Number(69))
+
+      expect('0').not.to.eql(2)
+
+      assert.throws(function () {
+        expect(void 0).to.eql(true)
+      }, /expected undefined to loosely equal true/)
+
+      assert.throws(function () {
+        expect(void 0).not.to.eql(null)
+      }, /expected undefined not to loosely equal null/)
+    })
+
+    it('works for arrays', function () {
+      var a = []
+
+      expect(a).to.eql(a)
+      expect([]).to.eql([])
+      expect([1, 2]).to.eql([1, 2])
+      expect([[1, 2], 3]).to.eql([[1, 2], 3])
+      expect([{ hi: 5 }]).to.eql([{ hi: 5 }])
+
+      expect([]).not.to.eql([1, 2])
+      expect({}).not.to.eql([1, 2])
+      expect([[]]).not.to.eql([1, 2])
+
+      assert.throws(function () {
+        expect([1, 2]).to.eql([])
+      }, /expected \[ 1, 2 \] to loosely equal \[\]/)
+
+      assert.throws(function () {
+        expect([]).not.to.eql([])
+      }, /expected \[\] not to loosely equal \[\]/)
+    })
+
+    it('works for objects', function () {
+      var a = {}
+
+      expect(a).to.eql(a)
+      expect({}).to.eql({})
+      expect({ hi: 5 }).to.eql({ hi: 5 })
+      expect({ hi: { five: 'yas' } }).to.eql({ hi: { five: 'yas' } })
+
+      expect({}).not.to.eql({ hi: 5 })
+      expect({}).not.to.eql([1, 2])
+
+      assert.throws(function () {
+        expect({ hi: 5 }).to.eql({})
+      }, /expected { hi: 5 } to loosely equal {}/)
+
+      assert.throws(function () {
+        expect({}).not.to.eql({})
+      }, /expected {} not to loosely equal {}/)
+    })
   })
 
   describe('.to.be.empty', function () {

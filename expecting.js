@@ -232,8 +232,8 @@ Assertion.prototype.be = Assertion.prototype.equal = function (obj) {
 Assertion.prototype.eql = function (obj) {
   this.assert(
     eql(this.obj, obj),
-    function () { return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) },
-    function () { return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) },
+    function () { return 'expected ' + i(this.obj) + ' to loosely equal ' + i(obj) },
+    function () { return 'expected ' + i(this.obj) + ' not to loosely equal ' + i(obj) },
     obj
   )
   return this
