@@ -17,6 +17,8 @@ In the browser, grab `dist/expecting.js`, and then use it:
 ```html
 <script src="expecting.js"></script>
 <script>
+var expect = expecting
+
 expect({ a: 'b' }).to.eql({ a: 'b' })
 expect([]).to.be.an('array')
 </script>
