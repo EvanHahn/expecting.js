@@ -1,5 +1,5 @@
-unreleased
-==========
+0.1.0 / 2016-01-23
+==================
 
 * new: `greaterThanOrEqualTo`/`atLeast`
 * new: `lessThanOrEqualTo`
@@ -22,6 +22,8 @@ unreleased
 * remove: `expect.stringify`
 
 This is the first version after the fork. Changes for the previous version are listed below.
+
+---
 
 0.3.0 / 2014-02-20
 ==================
