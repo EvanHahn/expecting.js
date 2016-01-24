@@ -422,19 +422,19 @@ Assertion.prototype.property = function (name, val) {
  */
 
 Assertion.prototype.string = Assertion.prototype.contain = function (obj) {
+  var conditional
   if (isString(this.obj)) {
-    this.assert(
-      ~this.obj.indexOf(obj),
-      function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
-      function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) }
-    )
+    conditional = ~this.obj.indexOf(obj)
   } else {
-    this.assert(
-      ~indexOf(this.obj, obj),
-      function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
-      function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) }
-    )
+    conditional = ~indexOf(this.obj, obj)
   }
+
+  this.assert(
+    conditional,
+    function () { return 'expected ' + i(this.obj) + ' to contain ' + i(obj) },
+    function () { return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) }
+  )
+
   return this
 }
 
