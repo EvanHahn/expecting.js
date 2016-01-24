@@ -424,17 +424,20 @@ describe('expect', function () {
     }, /expected 10 to be below 6/)
   })
 
-  it('should test match(regexp)', function () {
-    expect('foobar').to.match(/^foo/)
-    expect('foobar').to.not.match(/^bar/)
+  describe('.to.match', function () {
+    it('tests regular expressions', function () {
+      expect('foobar').to.match(/^foo/)
+      expect('foobar').to.not.match(/^bar/)
+      expect('foobar').to.match(new RegExp('^foo'))
 
-    assert.throws(function () {
-      expect('foobar').to.match(/^bar/i)
-    }, /expected 'foobar' to match \/\^bar\/i/)
+      assert.throws(function () {
+        expect('foobar').to.match(/^bar/i)
+      }, /expected 'foobar' to match \/\^bar\/i/)
 
-    assert.throws(function () {
-      expect('foobar').to.not.match(/^foo/i)
-    }, /expected 'foobar' not to match \/\^foo\/i/)
+      assert.throws(function () {
+        expect('foobar').to.not.match(/^foo/i)
+      }, /expected 'foobar' not to match \/\^foo\/i/)
+    })
   })
 
   describe('.to.have.length', function () {
