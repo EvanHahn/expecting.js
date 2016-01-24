@@ -409,19 +409,76 @@ describe('expect', function () {
     }, /expected 10 to be within 50..100/)
   })
 
-  it('should test above(n)', function () {
-    expect(5).to.be.above(2)
-    expect(5).to.be.greaterThan(2)
-    expect(5).to.not.be.above(5)
-    expect(5).to.not.be.above(6)
+  ;['above', 'greaterThan'].forEach(function (above) {
+    describe('.to.be.' + above, function () {
+      it('tests numbers', function () {
+        expect(5).to.be[above](2)
+        expect(new Number(5)).to.be[above](2)
+        expect(5).to.be[above](new Number(2))
+        expect(new Number(5)).to.be[above](new Number(2))
 
-    assert.throws(function () {
-      expect(5).to.be.above(6)
-    }, /expected 5 to be above 6/)
+        expect(5).to.not.be[above](5)
+        expect(5).to.not.be[above](6)
 
-    assert.throws(function () {
-      expect(10).to.not.be.above(6)
-    }, /expected 10 to be below 6/)
+        assert.throws(function () {
+          expect(5).to.be[above](6)
+        }, /expected 5 to be above 6/)
+
+        assert.throws(function () {
+          expect(10).to.not.be[above](6)
+        }, /expected 10 to be below 6/)
+      })
+
+      it('tests strings', function () {
+        expect('hi').to.be[above]('5')
+
+        expect('5').not.to.be[above]('hi')
+
+        assert.throws(function () {
+          expect('5').to.be[above]('hi')
+        }, /expected '5' to be above 'hi'/)
+
+        assert.throws(function () {
+          expect('hi').to.not.be[above]('5')
+        }, /expected 'hi' to be below '5'/)
+      })
+    })
+  })
+
+  ;['below', 'lessThan'].forEach(function (below) {
+    describe('.to.be.' + below, function () {
+      it('tests numbers', function () {
+        expect(2).to.be[below](5)
+        expect(new Number(2)).to.be[below](5)
+        expect(2).to.be[below](new Number(5))
+        expect(new Number(2)).to.be[below](new Number(5))
+
+        expect(6).to.not.be[below](5)
+        expect(6).to.not.be[below](6)
+
+        assert.throws(function () {
+          expect(6).to.be[below](5)
+        }, /expected 6 to be below 5/)
+
+        assert.throws(function () {
+          expect(6).to.not.be[below](10)
+        }, /expected 6 to be above 10/)
+      })
+
+      it('tests strings', function () {
+        expect('5').to.be[below]('hi')
+
+        expect('hi').not.to.be[below]('5')
+
+        assert.throws(function () {
+          expect('hi').to.be[below]('5')
+        }, /expected 'hi' to be below '5'/)
+
+        assert.throws(function () {
+          expect('5').to.not.be[below]('hi')
+        }, /expected '5' to be above 'hi'/)
+      })
+    })
   })
 
   describe('.to.match', function () {

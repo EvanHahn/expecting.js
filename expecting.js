@@ -301,8 +301,8 @@ Assertion.prototype.a = Assertion.prototype.an = function (type) {
 Assertion.prototype.greaterThan = Assertion.prototype.above = function (n) {
   this.assert(
     this.obj > n,
-    function () { return 'expected ' + i(this.obj) + ' to be above ' + n },
-    function () { return 'expected ' + i(this.obj) + ' to be below ' + n }
+    function () { return 'expected ' + i(this.obj) + ' to be above ' + i(n) },
+    function () { return 'expected ' + i(this.obj) + ' to be below ' + i(n) }
   )
   return this
 }
@@ -317,8 +317,8 @@ Assertion.prototype.greaterThan = Assertion.prototype.above = function (n) {
 Assertion.prototype.lessThan = Assertion.prototype.below = function (n) {
   this.assert(
     this.obj < n,
-    function () { return 'expected ' + i(this.obj) + ' to be below ' + n },
-    function () { return 'expected ' + i(this.obj) + ' to be above ' + n }
+    function () { return 'expected ' + i(this.obj) + ' to be below ' + i(n) },
+    function () { return 'expected ' + i(this.obj) + ' to be above ' + i(n) }
   )
   return this
 }

@@ -1,18 +1,19 @@
 unreleased
 ==========
 
- * update: non-array objects with `length` properties are no longer considered empty
- * update: change error message when determining emptiness of values that are not strings, arrays, or objects
- * update: change error messages for `.to.have.property` and `.to.have.own.property`
+* update: non-array objects with `length` properties are no longer considered empty
+* update: change error message when determining emptiness of values that are not strings, arrays, or objects
+* update: change error messages for `.to.have.property` and `.to.have.own.property`
 
- * fix: `.to.have.own.property` now works with the documented second argument
- * fix: `expect(NaN).to.be(NaN)` is no longer a failure
- * fix: object versions of literals (like `new String`) now work better
+* fix: `.to.have.own.property` now works with the documented second argument
+* fix: `expect(NaN).to.be(NaN)` is no longer a failure
+* fix: `.to.be.above` and `.to.be.below` have better string support
+* fix: object versions of literals (like `new String`) now work better
 
- * remove: `expect.version`
- * remove: `expect.Assertion`
- * remove: `expect.eql`
- * remove: `expect.stringify`
+* remove: `expect.version`
+* remove: `expect.Assertion`
+* remove: `expect.eql`
+* remove: `expect.stringify`
 
 This is the first version after the fork. Changes for the previous version are listed below.
 
