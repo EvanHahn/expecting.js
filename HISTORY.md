@@ -3,6 +3,7 @@ unreleased
 
 * new: `greaterThanOrEqualTo`/`atLeast`
 * new: `lessThanOrEqualTo`
+* new: `between` as an alias for `within`
 
 * update: non-array objects with `length` properties are no longer considered empty
 * update: change error message when determining emptiness of values that are not strings, arrays, or objects

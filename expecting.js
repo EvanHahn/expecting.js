@@ -249,7 +249,7 @@ Assertion.prototype.eql = function (obj) {
  * @api public
  */
 
-Assertion.prototype.within = function (start, finish) {
+Assertion.prototype.within = Assertion.prototype.between = function (start, finish) {
   var rangeString = start + '..' + finish
   this.assert(
     this.obj >= start && this.obj <= finish,

@@ -410,19 +410,21 @@ describe('expect', function () {
     })
   })
 
-  describe('.to.be.within', function () {
-    it('tests within a range', function () {
-      expect(5).to.be.within(3, 6)
-      expect(5).to.be.within(3, 5)
-      expect(5).to.not.be.within(1, 3)
+  ;['within', 'between'].forEach(function (within) {
+    describe('.to.be.' + within, function () {
+      it('tests within a range', function () {
+        expect(5).to.be[within](3, 6)
+        expect(5).to.be[within](3, 5)
+        expect(5).to.not.be[within](1, 3)
 
-      assert.throws(function () {
-        expect(5).to.not.be.within(4, 6)
-      }, /expected 5 to not be within 4..6/)
+        assert.throws(function () {
+          expect(5).to.not.be[within](4, 6)
+        }, /expected 5 to not be within 4..6/)
 
-      assert.throws(function () {
-        expect(10).to.be.within(50, 100)
-      }, /expected 10 to be within 50..100/)
+        assert.throws(function () {
+          expect(10).to.be[within](50, 100)
+        }, /expected 10 to be within 50..100/)
+      })
     })
   })
 
