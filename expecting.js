@@ -1,4 +1,5 @@
 var bind = require('lodash/bind')
+var every = require('lodash/every')
 var has = require('lodash/has')
 var hasIn = require('lodash/hasin')
 var i = require('util').inspect
@@ -506,23 +507,6 @@ Assertion.prototype.fail = function (msg) {
   var error = function () { return msg || 'explicit failure' }
   this.assert(false, error, error)
   return this
-}
-
-/**
- * Array every compatibility
- *
- * @see bit.ly/5Fq1N2
- * @api public
- */
-
-function every (arr, fn, thisObj) {
-  var scope = thisObj || global
-  for (var i = 0, j = arr.length; i < j; ++i) {
-    if (!fn.call(scope, arr[i], i, arr)) {
-      return false
-    }
-  }
-  return true
 }
 
 /**
