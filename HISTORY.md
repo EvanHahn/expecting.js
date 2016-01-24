@@ -10,6 +10,7 @@ unreleased
 * fix: `expect(NaN).to.be(NaN)` is no longer a failure
 * fix: `.to.be.above` and `.to.be.below` have better string support
 * fix: object versions of literals (like `new String`) now work better
+* fix: `.to.eql` for Set objects
 
 * remove: `expect.version`
 * remove: `expect.Assertion`
