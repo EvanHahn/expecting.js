@@ -1,7 +1,7 @@
 Expecting.js
 ============
 
-A minimalistic BDD assertion library. An actively maintained [expect.js](https://github.com/Automattic/expect.js).
+A minimalistic BDD assertion library. An actively maintained fork of [expect.js](https://github.com/Automattic/expect.js).
 
 In Node, `npm install expecting`, and then use it:
 
